@@ -1,0 +1,12 @@
+
+all: searcher 
+
+SRC= main.go
+LN= main.8
+
+$(LN): $(SRC)
+	8g -o $@ $(SRC)
+
+searcher: $(LN)
+	8l -o $@ $(LN)
+
