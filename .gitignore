@@ -1,0 +1,3 @@
+#ignore the kdev4 files and folders
+
+*.kdev4
