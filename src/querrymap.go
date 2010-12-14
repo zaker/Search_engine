@@ -77,10 +77,10 @@ func (qm QuerryMap) QuerryReader() (err os.Error) {
 
 	}
 
-	for i := range qm {
-		// 		println("r",i)
-		// 			for i := 0 ; i < len(dm);i++{
-		println(qm[i].I, qm[i].W)
-	}
+// 	for i := range qm {
+// 		// 		println("r",i)
+// 		// 			for i := 0 ; i < len(dm);i++{
+// 		println(qm[i].I, qm[i].W)
+// 	}
 	return nil
 }

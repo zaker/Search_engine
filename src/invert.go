@@ -4,6 +4,9 @@ package main
 import (
 	"strings"
 	"os"
+	"bytes"
+	"gob"
+	"fmt"
 )
 
 
@@ -81,6 +84,56 @@ func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
 	// 		print(im["no"][i])
 	// 	}
 	// 	println()
+	
+	
+	
 
+
+// 	println(b.String())
+	
 	return nil
+}
+
+
+// Takes a Doc Map and adds to the inverted map
+func (im *InvertMap)DocMToInM(dm DocMap)(err os.Error){
+	
+	im_filename := "../tmp/im_file"
+		       
+	if existsQ(im_filename){
+		println("exist")
+	}
+	
+	for i := range dm {
+
+		err = im.AddTo(dm[i].W, dm[i].I)
+	}	
+	
+	
+	if err != nil{
+		fmt.Printf("%s\n",err.String())
+		return
+	}
+	
+	b := new(bytes.Buffer)
+	
+	enc := gob.NewEncoder(b)
+	
+	err = enc.Encode(im)
+	
+	if err != nil{
+		fmt.Printf("encode %s\n",err.String())
+		return
+	}
+	
+	err = write_to(im_filename,b.Bytes())
+	
+	
+	if err != nil{
+		fmt.Printf("write %s\n",err.String())
+		return
+	}
+	
+	return nil
+	
 }

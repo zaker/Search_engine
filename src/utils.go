@@ -1,6 +1,10 @@
 package main
 
-import "os"
+import (
+	"os"
+	"path"
+	"fmt"
+)
 
 func contents(filename string) (string, os.Error) {
 	f, err := os.Open(filename, os.O_RDONLY, 0)
@@ -22,4 +26,31 @@ func contents(filename string) (string, os.Error) {
 		}
 	}
 	return string(result), nil // f will be closed if we return here.
+}
+
+func write_to(filename string, buffer []byte)(err os.Error){
+	
+	f,err := os.Open(filename, os.O_CREAT | os.O_RDWR, 0777)
+	defer f.Close()
+	if err != nil {
+		fmt.Printf("Open %s\n",err.String())
+		return
+	}
+	_,err = f.Write(buffer)
+	
+	if err != nil {
+		fmt.Printf("Write %s\n",err.String())
+		return
+	}
+	return nil
+}
+
+func existsQ(filename string) bool{
+	
+	if path.Glob(filename) == nil{
+		return false
+	}
+	
+	return true
+	
 }
