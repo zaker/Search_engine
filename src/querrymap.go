@@ -16,8 +16,6 @@ type Querry struct {
 type QuerryMap map[int]Querry
 
 
-
-
 func sToQuerry(s string) (*Querry, os.Error) {
 
 	tmp := strings.Split(s, ".W", -1)
@@ -33,13 +31,12 @@ func sToQuerry(s string) (*Querry, os.Error) {
 	if err != nil {
 		return nil, err
 	}
-	
 
 	return &Querry{I: I, W: W}, nil
 }
 
-func NewQuerryMap()(QuerryMap){
-	
+func NewQuerryMap() QuerryMap {
+
 	return make(QuerryMap)
 }
 
@@ -58,32 +55,31 @@ func (qm QuerryMap) addTo(s string) (err os.Error) {
 
 	return nil
 }
-func (qm QuerryMap)QuerryReader() ( err os.Error) {
+func (qm QuerryMap) QuerryReader() (err os.Error) {
 
 	Querries, err := contents("../data/cran.qry")
 
 	if err != nil {
-		return 
+		return
 	}
-	
-	if qm == nil{
-		
+
+	if qm == nil {
+
 		return os.NewError("QuerryMap not initialized")
 	}
 
 	QuerryStrings := strings.Split(Querries, ".I", -1)
 
-	
 	for i := range QuerryStrings {
-// 	for i := 0; i < 2; i++{
-// 		println("w",i,QuerryStrings[i])
+		// 	for i := 0; i < 2; i++{
+		// 		println("w",i,QuerryStrings[i])
 		qm.addTo(QuerryStrings[i])
 
 	}
 
 	for i := range qm {
-// 		println("r",i)
-// 			for i := 0 ; i < len(dm);i++{
+		// 		println("r",i)
+		// 			for i := 0 ; i < len(dm);i++{
 		println(qm[i].I, qm[i].W)
 	}
 	return nil

@@ -51,8 +51,8 @@ func sToDoc(s string) (*Doc, os.Error) {
 }
 
 
-func NewDocMap()(DocMap){
-	
+func NewDocMap() DocMap {
+
 	return make(DocMap)
 }
 
@@ -71,23 +71,23 @@ func (dm DocMap) addTo(s string) (err os.Error) {
 
 	return nil
 }
-func (dm DocMap)DocReader() ( err os.Error) {
+func (dm DocMap) DocReader() (err os.Error) {
 
 	Docs, err := contents("../data/cran.all.1400")
 
 	if err != nil {
-		return 
+		return
 	}
-	
-	if dm == nil{
-		
+
+	if dm == nil {
+
 		return os.NewError("DocMap not initialized")
 	}
 
 	DocStrings := strings.Split(Docs, ".I", -1)
 
 	// 	println(DocStrings[3])
-	
+
 	for i := range DocStrings {
 		// 	for i = 0; i < 2; i++{
 		dm.addTo(DocStrings[i])
@@ -98,14 +98,14 @@ func (dm DocMap)DocReader() ( err os.Error) {
 	// 	println("|",dm[52].T,"|")
 	// 	println("|",dm[52].A,"|")
 	// 	println("|",dm[52].B,"|")
-// 	println("|", dm[52].W, "|")
-// 
-// 	for i := range dm {
-// 		// 	for i := 0 ; i < len(dm);i++{
-// 		if len(dm[i].A) < 4 {
-// 			println(dm[i].A, dm[i].I)
-// 		}
-// 	}
+	// 	println("|", dm[52].W, "|")
+	// 
+	// 	for i := range dm {
+	// 		// 	for i := 0 ; i < len(dm);i++{
+	// 		if len(dm[i].A) < 4 {
+	// 			println(dm[i].A, dm[i].I)
+	// 		}
+	// 	}
 
 	return nil
 }
