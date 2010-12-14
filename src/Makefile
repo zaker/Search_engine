@@ -1,7 +1,7 @@
 
 all: searcher 
 
-SRC= main.go
+SRC= main.go docmap.go querrymap.go utils.go invert.go
 LN= main.8
 
 
