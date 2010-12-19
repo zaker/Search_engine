@@ -94,26 +94,24 @@ func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
 	return nil
 }
 
+func (im *InvertMap)Load(im_filename string)(err os.Error){
+	
+// 	b := new(bytes.Buffer)
+	
 
-// Takes a Doc Map and adds to the inverted map
-func (im *InvertMap)DocMToInM(dm DocMap)(err os.Error){
 	
-	im_filename := "../tmp/im_file"
-		       
-	if existsQ(im_filename){
-		println("exist")
-	}
-	
-	for i := range dm {
+	str, err := contents(im_filename)
 
-		err = im.AddTo(dm[i].W, dm[i].I)
-	}	
+// 	println("by", len(by))
+	b := bytes.NewBufferString(str)
+	println("by", b.Len())
+	dec := gob.NewDecoder(b)
 	
+	dec.Decode(im)
 	
-	if err != nil{
-		fmt.Printf("%s\n",err.String())
-		return
-	}
+	return nil
+}
+func (im *InvertMap)Save(im_filename string)(err os.Error){
 	
 	b := new(bytes.Buffer)
 	
@@ -135,5 +133,31 @@ func (im *InvertMap)DocMToInM(dm DocMap)(err os.Error){
 	}
 	
 	return nil
+}
+
+// Takes a Doc Map and adds to the inverted map
+func (im *InvertMap)DocMToInM(dm DocMap)(err os.Error){
+	
+	im_filename := "../tmp/im_file"
+		       
+	if existsQ(im_filename){
+		println("exist")
+		return im.Load(im_filename)
+	}
+	
+	for i := range dm {
+
+		err = im.AddTo(dm[i].W, dm[i].I)
+	}	
+	
+	
+	if err != nil{
+		fmt.Printf("%s\n",err.String())
+		return
+	}
+	
+
+	
+	return im.Save(im_filename)
 	
 }

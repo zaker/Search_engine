@@ -27,22 +27,23 @@ func main() {
 	
 	err = im.DocMToInM(dm)
 	
-	
-	println("done indexing! ", err.String())
+	if err != nil {
+		println(err.String())
+	}
 
-// 	var words []string
-// 	for i := range im {
-// 		// 		key, _ := im[i]
-// 		// 		print(i, " : ")
+	var words []string
+	for i := range im {
+				key, _ := im[i]
+				print(i, " : ")
 // 
-// 		words = append(words, i)
-// 		// 		for j := range key {
-// 		// 			print(key[j], " ")
-// 		// 		}
-// 		// 		println()
-// 	}
+		words = append(words, i)
+				for j := range key {
+					print(key[j], " ")
+				}
+				println()
+	}
 // 
-// 	println(len(im), len(words))
+	println(len(im), len(words))
 	
 	
 	

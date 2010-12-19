@@ -1,3 +1,7 @@
 #ignore the kdev4 files and folders
 
 *.kdev4
+
+#ignore the temporary files in the tmp folder
+
+tmp/**/*
