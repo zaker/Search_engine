@@ -1,17 +1,20 @@
 package main
 
-import "os"
+import (
+	
+	"sort"
+	"os"
+)
 
 
 func main() {
 
-	
 	var err os.Error
-	
+
 	dm := NewDocMap()
 	dm.DocReader()
 
-	if err != nil{
+	if err != nil {
 		return
 	}
 	qm := NewQuerryMap()
@@ -20,34 +23,36 @@ func main() {
 
 	im := NewInvertMap()
 
-// 	for i := range dm {
-// 
-// 		im.AddTo(dm[i].W, dm[i].I)
-// 	}
-	
+	// 	for i := range dm {
+	// 
+	// 		im.AddTo(dm[i].W, dm[i].I)
+	// 	}
+
 	err = im.DocMToInM(dm)
-	
+
 	if err != nil {
 		println(err.String())
 	}
 
 	var words []string
 	for i := range im {
-				key, _ := im[i]
-				print(i, " : ")
-// 
+// 		key, _ := im[i]
+		print(i, " : ")
+		// 
 		words = append(words, i)
-				for j := range key {
-					print(key[j], " ")
-				}
-				println()
+// 		for j := range key {
+		print(im.LenDocs(i))
+// 		}
+		println()
 	}
-// 
+	// 
 	println(len(im), len(words))
+
+// 	sa := sort.StringArray(words[0:])
+	sort.SortStrings(words)
 	
-	
-	
-// 	sa := sort.StringArray(words)
-	// 	sort_words := sort.SortStrings(sa)
+	for i := range words{
+		println(words[i])
+	}
 	// 	println(i)
 }

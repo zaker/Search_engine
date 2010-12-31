@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"gob"
 	"fmt"
+	"regexp"
 )
 
 
@@ -20,30 +21,33 @@ func NewInvertMap() InvertMap {
 func cleanS(s string) (out []string) {
 
 	// 	remove symbols and numbers
-
-	s = strings.Replace(s, ".", " ", -1)
-	s = strings.Replace(s, "'", " ", -1)
-	s = strings.Replace(s, ",", " ", -1)
-	s = strings.Replace(s, "/", " ", -1)
-	s = strings.Replace(s, "-", " ", -1)
-	s = strings.Replace(s, "(", " ", -1)
-	s = strings.Replace(s, ")", " ", -1)
-	s = strings.Replace(s, "0", " ", -1)
-	s = strings.Replace(s, "1", " ", -1)
-	s = strings.Replace(s, "2", " ", -1)
-	s = strings.Replace(s, "3", " ", -1)
-	s = strings.Replace(s, "4", " ", -1)
-	s = strings.Replace(s, "5", " ", -1)
-	s = strings.Replace(s, "6", " ", -1)
-	s = strings.Replace(s, "7", " ", -1)
-	s = strings.Replace(s, "8", " ", -1)
-	s = strings.Replace(s, "9", " ", -1)
+	r ,_:= regexp.Compile("[^a-z]")
+	
+	s = r.ReplaceAllString(s," ")
+// 	s = strings.Replace(s, ".", " ", -1)
+// 	s = strings.Replace(s, "'", " ", -1)
+// 	s = strings.Replace(s, ",", " ", -1)
+// 	s = strings.Replace(s, "/", " ", -1)
+// 	s = strings.Replace(s, "-", " ", -1)
+// 	s = strings.Replace(s, "=", " ", -1)
+// 	s = strings.Replace(s, "(", " ", -1)
+// 	s = strings.Replace(s, ")", " ", -1)
+// 	s = strings.Replace(s, "0", " ", -1)
+// 	s = strings.Replace(s, "1", " ", -1)
+// 	s = strings.Replace(s, "2", " ", -1)
+// 	s = strings.Replace(s, "3", " ", -1)
+// 	s = strings.Replace(s, "4", " ", -1)
+// 	s = strings.Replace(s, "5", " ", -1)
+// 	s = strings.Replace(s, "6", " ", -1)
+// 	s = strings.Replace(s, "7", " ", -1)
+// 	s = strings.Replace(s, "8", " ", -1)
+// 	s = strings.Replace(s, "9", " ", -1)
 
 	tmp := strings.Fields(s)
 
 	for i := range tmp {
 
-		if len(tmp[i]) > 1 {
+		if len(tmp[i]) > 3 {
 			out = append(out, tmp[i])
 		}
 	}
@@ -84,80 +88,80 @@ func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
 	// 		print(im["no"][i])
 	// 	}
 	// 	println()
-	
-	
-	
 
+	// 	println(b.String())
 
-// 	println(b.String())
-	
 	return nil
 }
 
-func (im *InvertMap)Load(im_filename string)(err os.Error){
+func (im InvertMap) LenDocs(key string) (l int ){
 	
-// 	b := new(bytes.Buffer)
+	ar := im[key]
 	
+	
+	
+	return len(ar)
+	
+	
+	
+}
 
-	
+
+func (im *InvertMap) Load(im_filename string) (err os.Error) {
+
 	str, err := contents(im_filename)
 
-// 	println("by", len(by))
 	b := bytes.NewBufferString(str)
-	println("by", b.Len())
 	dec := gob.NewDecoder(b)
-	
+
 	dec.Decode(im)
-	
+
 	return nil
 }
-func (im *InvertMap)Save(im_filename string)(err os.Error){
-	
+
+func (im *InvertMap) Save(im_filename string) (err os.Error) {
+
 	b := new(bytes.Buffer)
-	
+
 	enc := gob.NewEncoder(b)
-	
+
 	err = enc.Encode(im)
-	
-	if err != nil{
-		fmt.Printf("encode %s\n",err.String())
+
+	if err != nil {
+		fmt.Printf("encode %s\n", err.String())
 		return
 	}
-	
-	err = write_to(im_filename,b.Bytes())
-	
-	
-	if err != nil{
-		fmt.Printf("write %s\n",err.String())
+
+	err = write_to(im_filename, b.Bytes())
+
+	if err != nil {
+		fmt.Printf("write %s\n", err.String())
 		return
 	}
-	
+
 	return nil
 }
 
 // Takes a Doc Map and adds to the inverted map
-func (im *InvertMap)DocMToInM(dm DocMap)(err os.Error){
-	
+func (im *InvertMap) DocMToInM(dm DocMap) (err os.Error) {
+
 	im_filename := "../tmp/im_file"
-		       
-	if existsQ(im_filename){
+
+	if existsQ(im_filename) {
 		println("exist")
 		return im.Load(im_filename)
 	}
-	
+
 	for i := range dm {
 
 		err = im.AddTo(dm[i].W, dm[i].I)
-	}	
-	
-	
-	if err != nil{
-		fmt.Printf("%s\n",err.String())
+	}
+
+	if err != nil {
+		fmt.Printf("%s\n", err.String())
 		return
 	}
-	
 
-	
 	return im.Save(im_filename)
-	
+
 }
