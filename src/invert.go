@@ -21,27 +21,27 @@ func NewInvertMap() InvertMap {
 func cleanS(s string) (out []string) {
 
 	// 	remove symbols and numbers
-	r ,_:= regexp.Compile("[^a-z]")
-	
-	s = r.ReplaceAllString(s," ")
-// 	s = strings.Replace(s, ".", " ", -1)
-// 	s = strings.Replace(s, "'", " ", -1)
-// 	s = strings.Replace(s, ",", " ", -1)
-// 	s = strings.Replace(s, "/", " ", -1)
-// 	s = strings.Replace(s, "-", " ", -1)
-// 	s = strings.Replace(s, "=", " ", -1)
-// 	s = strings.Replace(s, "(", " ", -1)
-// 	s = strings.Replace(s, ")", " ", -1)
-// 	s = strings.Replace(s, "0", " ", -1)
-// 	s = strings.Replace(s, "1", " ", -1)
-// 	s = strings.Replace(s, "2", " ", -1)
-// 	s = strings.Replace(s, "3", " ", -1)
-// 	s = strings.Replace(s, "4", " ", -1)
-// 	s = strings.Replace(s, "5", " ", -1)
-// 	s = strings.Replace(s, "6", " ", -1)
-// 	s = strings.Replace(s, "7", " ", -1)
-// 	s = strings.Replace(s, "8", " ", -1)
-// 	s = strings.Replace(s, "9", " ", -1)
+	r, _ := regexp.Compile("[^a-z]")
+
+	s = r.ReplaceAllString(s, " ")
+	// 	s = strings.Replace(s, ".", " ", -1)
+	// 	s = strings.Replace(s, "'", " ", -1)
+	// 	s = strings.Replace(s, ",", " ", -1)
+	// 	s = strings.Replace(s, "/", " ", -1)
+	// 	s = strings.Replace(s, "-", " ", -1)
+	// 	s = strings.Replace(s, "=", " ", -1)
+	// 	s = strings.Replace(s, "(", " ", -1)
+	// 	s = strings.Replace(s, ")", " ", -1)
+	// 	s = strings.Replace(s, "0", " ", -1)
+	// 	s = strings.Replace(s, "1", " ", -1)
+	// 	s = strings.Replace(s, "2", " ", -1)
+	// 	s = strings.Replace(s, "3", " ", -1)
+	// 	s = strings.Replace(s, "4", " ", -1)
+	// 	s = strings.Replace(s, "5", " ", -1)
+	// 	s = strings.Replace(s, "6", " ", -1)
+	// 	s = strings.Replace(s, "7", " ", -1)
+	// 	s = strings.Replace(s, "8", " ", -1)
+	// 	s = strings.Replace(s, "9", " ", -1)
 
 	tmp := strings.Fields(s)
 
@@ -94,16 +94,12 @@ func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
 	return nil
 }
 
-func (im InvertMap) LenDocs(key string) (l int ){
-	
+func (im InvertMap) LenDocs(key string) (l int) {
+
 	ar := im[key]
-	
-	
-	
+
 	return len(ar)
-	
-	
-	
+
 }
 
 

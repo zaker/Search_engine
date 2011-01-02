@@ -55,77 +55,7 @@ import (
 // int isconsonant(char s);
 // int acceptable(char *s);
 // 
-// main(int argc,char *argv[]){
-// 
-// 	struct rule trule;
-// 	struct rule ttable[26];
-// 
-// 	FILE *rulp;
-// 	FILE *inp;
-// 	FILE *outp;
-// 	char didit;
-// 	char instring[maxwdsz];
-// 	char *str;
-// 	int x;
-// 	struct rule *rp;
-// 
-// 	if(argc != 3){ /* If there is no rule file specified... */
-// 		printf("Must supply rule and input file names\n");
-// 		exit(1);
-// 	}
-// 
-// 	/* If file of stemmer rules is not opened correctly... */ 
-// 	if((rulp = fopen(argv[1],"r")) == NULL){
-// 
-// 		printf("Sorry,rule file error.You lose.\n");
-// 		exit(1); /* ..then leave abruptly with a message */
-// 	}
-// 	printf("Rule file opened.\n");
-// 
-// 	/* Same for the input file... */
-// 	if((inp = fopen(argv[2],"r")) == NULL){
-// 		printf("Sorry,source file error.You lose\n");
-// 		exit(1);
-// 	}
-// 	/* Create a new output file if one doesn't exist already */
-// 	/* (previous one will be overwritten).Name is same as input  */
-// 	/* file,but with '.stm' added at the end */
-// 	if((outp = fopen(strcat(argv[2],".stm"),"w+")) == NULL){
-// 		printf("Sorry,output file error.Try again\n");
-// 		exit(1);
-// 	}
-// 
-// 	inittable(ttable); 
-// 	readrules(rulp,ttable); /* Read in a rule set from the file */
-// 
-// 	fclose(rulp); /* And then close the file */
-// 
-// 	/* Get each line of the file,stem it (if it's a word) and write it */
-// 	/* to the output file until EOF(input) */
-// 	while(fgets(instring,maxlinelength,inp) != NULL){
-// 
-// 		/* If the line of input file begins with a letter.. */
-// 		if(isalpha(*instring)){
-// 			*(strchr(instring,'\n')) = '\0'; /* Delete the return character */
-// 
-// 			/* Remove unwanted char from the end of the line */
-// 			instring[strcspn(instring," \t\n")] = '\0';
-// 
-// 			trule = stem(instring,ttable); /* Stem the word.. */
-// 
-// 			/* ..and write the stem (+ a newline char) to the output file */
-// 			/* along with rule number */
-// 			fprintf(outp,"%s %d\n",trule.text,trule.rulenum);
-// 		}
-// 		else{
-// 			fputs(instring,outp);
-// 		}
-// 	}
-// 	fclose(inp); /* Close the input file */
-// 	fclose(outp); /* And the output file */
-// 
-// } /* end */
-// 
+
 // int tblindex(char *s){
 // 
 // 	int x;
@@ -393,7 +323,11 @@ import (
 // 	
 // 	return r; /* Return the rule,stemmed */
 // } 
-// 
+//
+
+func NewStemmer() (st Stemmer, err os.Error) {
+	return st, nil
+}
 // void inittable(struct rule t[26]){
 // 
 // 	int x;
@@ -425,6 +359,17 @@ import (
 // 
 // } 
 // 
+func acceptable(s string) (b bool, err os.Error) {
+	x := len(s)
+
+	b = false
+	err = nil
+	if x > 3 {
+		return
+	}
+
+	return true, nil
+}
 // int acceptable(char *s){
 // 
 // 	/* Acceptability condition:if the stem begins with a vowel,then it */
@@ -450,39 +395,111 @@ import (
 // }
 // 
 
-type Stemmer interface{}
-
-
-type rule struct{
-	
-	
-	text string  /* To return stemmer output */
-	keystr string /* Key string,ie,suffix to remove */
-	repstr string /* string to replace deleted letters */
-	intact bool /* Boolean-must word be intact? */
-	cont bool; /* Boolean-continue with another rule? */
-	rulenum int /* Line number of rule in rule list file */
-	protect bool /* Boolean-protect this ending? */
-	deltotal int /* Delete how many letters? */
-	next *rule /* Next item in linked list */
-	
-	
-	
+type Stemmer struct {
+	rules      map[int]rule
+	true_words []string
 }
 
-func (st Stemmer)
+
+type rule struct {
+	text     string /* To return stemmer output */
+	keystr   string /* Key Sstring,ie,suffix to remove */
+	repstr   string /* string to replace deleted letters */
+	intact   bool   /* Boolean-must word be intact? */
+	cont     bool   /* Boolean-continue with another rule? */
+	rulenum  int    /* Line number of rule in rule list file */
+	protect  bool   /* Boolean-protect this ending? */
+	deltotal int    /* Delete how many letters? */
+	next     *rule  /* Next item in linked list */
 
 
-func Stem(ins string)(outs string, err os.Error){
-	
-	
+}
+
+func (st Stemmer) Stem(s string) (stemmed string, err os.Error) {
+
+	return stemmed, nil
+}
+
+
+// main(int argc,char *argv[]){
+// 
+// 	struct rule trule;
+// 	struct rule ttable[26];
+// 
+// 	FILE *rulp;
+// 	FILE *inp;
+// 	FILE *outp;
+// 	char didit;
+// 	char instring[maxwdsz];
+// 	char *str;
+// 	int x;
+// 	struct rule *rp;
+// 
+// 	if(argc != 3){ /* If there is no rule file specified... */
+// 		printf("Must supply rule and input file names\n");
+// 		exit(1);
+// 	}
+// 
+// 	/* If file of stemmer rules is not opened correctly... */ 
+// 	if((rulp = fopen(argv[1],"r")) == NULL){
+// 
+// 		printf("Sorry,rule file error.You lose.\n");
+// 		exit(1); /* ..then leave abruptly with a message */
+// 	}
+// 	printf("Rule file opened.\n");
+// 
+// 	/* Same for the input file... */
+// 	if((inp = fopen(argv[2],"r")) == NULL){
+// 		printf("Sorry,source file error.You lose\n");
+// 		exit(1);
+// 	}
+// 	/* Create a new output file if one doesn't exist already */
+// 	/* (previous one will be overwritten).Name is same as input  */
+// 	/* file,but with '.stm' added at the end */
+// 	if((outp = fopen(strcat(argv[2],".stm"),"w+")) == NULL){
+// 		printf("Sorry,output file error.Try again\n");
+// 		exit(1);
+// 	}
+// 
+// 	inittable(ttable); 
+// 	readrules(rulp,ttable); /* Read in a rule set from the file */
+// 
+// 	fclose(rulp); /* And then close the file */
+// 
+// 	/* Get each line of the file,stem it (if it's a word) and write it */
+// 	/* to the output file until EOF(input) */
+// 	while(fgets(instring,maxlinelength,inp) != NULL){
+// 
+// 		/* If the line of input file begins with a letter.. */
+// 		if(isalpha(*instring)){
+// 			*(strchr(instring,'\n')) = '\0'; /* Delete the return character */
+// 
+// 			/* Remove unwanted char from the end of the line */
+// 			instring[strcspn(instring," \t\n")] = '\0';
+// 
+// 			trule = stem(instring,ttable); /* Stem the word.. */
+// 
+// 			/* ..and write the stem (+ a newline char) to the output file */
+// 			/* along with rule number */
+// 			fprintf(outp,"%s %d\n",trule.text,trule.rulenum);
+// 		}
+// 		else{
+// 			fputs(instring,outp);
+// 		}
+// 	}
+// 	fclose(inp); /* Close the input file */
+// 	fclose(outp); /* And the output file */
+// 
+// } /* end */
+// 
+
+func Stem(ins string) (outs string, err os.Error) {
+
 	rules_file := "../data/stemrules"
-	
-	rules_string,err := contents(rules_file)
-	
-	strings.HasSuffix(rules_string,"")
-	
-	
-	
+
+	rules_string, err := contents(rules_file)
+
+	strings.HasSuffix(rules_string, "")
+
 	return
 }
