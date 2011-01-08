@@ -401,7 +401,14 @@ type Stemmer struct {
 }
 
 
-type rule struct {
+type word struct {
+	orign string
+	stem string
+	cond int
+}
+
+
+type rules struct {
 	text     string /* To return stemmer output */
 	keystr   string /* Key Sstring,ie,suffix to remove */
 	repstr   string /* string to replace deleted letters */
@@ -492,6 +499,17 @@ func (st Stemmer) Stem(s string) (stemmed string, err os.Error) {
 // 
 // } /* end */
 // 
+func apply_rule(n int,s string)(out string,cond int, err Os.Error){
+	out = s
+	
+	if( string.HasSuffix(s,rule[n].suffix)){
+		out = out[:len(out)-len(rule[n].suffix)]
+		
+		append(out,rule[n].replace)
+	}
+	
+	
+}
 
 func Stem(ins string) (outs string, err os.Error) {
 
