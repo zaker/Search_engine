@@ -50,8 +50,8 @@ func main() {
 	// 	sa := sort.StringArray(words[0:])
 	sort.SortStrings(words)
 
-	for i := range words {
-		println(words[i])
-	}
+// 	for i := range words {
+// // // 		println(words[i])
+// 	}
 	// 	println(i)
 }

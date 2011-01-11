@@ -44,11 +44,12 @@ func cleanS(s string) (out []string) {
 	// 	s = strings.Replace(s, "9", " ", -1)
 
 	tmp := strings.Fields(s)
-
+	st := NewStemmer()
 	for i := range tmp {
 
 		if len(tmp[i]) > 3 {
-			out = append(out, tmp[i])
+			stem,_ := st.Stem(tmp[i])
+			out = append(out, stem)
 		}
 	}
 
