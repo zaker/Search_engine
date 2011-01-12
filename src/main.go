@@ -36,22 +36,22 @@ func main() {
 	var words []string
 	for i := range im {
 		// 		key, _ := im[i]
-		print(i, " : ")
+		// 		print(i, " : ")
 		// 
 		words = append(words, i)
 		// 		for j := range key {
-		print(im.LenDocs(i))
+		// 		print(im.LenDocs(i))
 		// 		}
-		println()
+		// 		println()
 	}
 	// 
-	println(len(im), len(words))
 
 	// 	sa := sort.StringArray(words[0:])
 	sort.SortStrings(words)
 
-// 	for i := range words {
-// // // 		println(words[i])
-// 	}
+	for i := range words {
+		println(words[i])
+	}
+	println(len(im), len(words))
 	// 	println(i)
 }

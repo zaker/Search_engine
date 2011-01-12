@@ -30,7 +30,7 @@
 package main
 
 import (
-// 	"strings"
+	// 	"strings"
 	"os"
 )
 // 	#include <stdlib.h>  /* for malloc, free */
@@ -92,13 +92,13 @@ type Stemmer struct {
 // 
 func NewStemmer() *Stemmer {
 
-// 	st = make(Stemmer)
+	// 	st = make(Stemmer)
 	return new(Stemmer)
 }
 
-func (st * Stemmer)printS(){
+func (st *Stemmer) printS() {
 	println(st.b)
-	println(st.k,st.j)
+	println(st.k, st.j)
 }
 // 	extern struct stemmer * create_stemmer(void)
 // 	{
@@ -117,8 +117,8 @@ func (st * Stemmer)printS(){
 // 	*/
 // 
 func (st *Stemmer) cons(i int) bool {
-// 	ch := st.b[i]
-// 	println(ch)
+	// 	ch := st.b[i]
+	// 	println(ch)
 	switch st.b[i] {
 	case 'a', 'e', 'i', 'o', 'u', 'y':
 		return false
@@ -267,8 +267,8 @@ func (st *Stemmer) cvc(i int) bool {
 	if i < 2 || !st.cons(i) || st.cons(i-1) || !st.cons(i-2) {
 		return false
 	}
-	ch := st.b[i]
-	switch ch {
+	// 	ch := st.b[i]
+	switch st.b[i] {
 	case 'w', 'x', 'y':
 		return false
 	}
@@ -287,21 +287,23 @@ func (st *Stemmer) cvc(i int) bool {
 func (st *Stemmer) ends(s string) bool {
 	// 	ends(s) is TRUE <=> k0,...k ends with the string s."""
 	length := len(s)
-// 	println("before tiny",st.b,s,length,st.k)
-	if st.k < length+1 {return false}
+	// 	println("before tiny",st.b,s,length,st.k)
+	if st.k < length {
+		return false
+	}
 	if s[length-1] != st.b[st.k] { // tiny speed-up
 		return false
 	}
-// 	println(s,length,st.k)
-	
+	// 	println(s,length,st.k)
+
 	if length > (st.k + 1) {
 		return false
 	}
-// 	println(s,length,st.k)
+	// 	println(s,length,st.k)
 	if st.b[st.k-length+1:st.k+1] != s {
 		return false
 	}
-// 	println(s,length,st.k)
+	// 	println(s,length,st.k)
 	st.j = st.k - length
 	return true
 	// 	return strings.HasSuffix(st.b,suf)
@@ -320,12 +322,16 @@ func (st *Stemmer) ends(s string) bool {
 // 	/* setto(z, s) sets (j+1),...k to the characters in the string s, readjusting
 // 	k. */
 // 
-func (st *Stemmer) setto(rep string) {
+func (st *Stemmer) setto(s string) {
 	// 	st.b  = st.b[:len(rep)]
-	st.b = st.b[:st.j+1]
-// 	append(st.b, rep)
-	st.b = st.b + rep
-	st.k = st.j
+	length := len(s)
+	if st.j >= st.k {
+		return
+	}
+	// 	append(st.b, rep)
+
+	st.b = st.b[:st.j+1] + s + st.b[st.j+length+1:]
+	st.k = st.j + length
 }
 
 // 	static void setto(struct stemmer * z, char * s)
@@ -367,20 +373,20 @@ func (st *Stemmer) r(s string) {
 // 	*/
 // 
 func (st *Stemmer) step1ab() {
-// 	println(st.b,st.k)
+	// 	println(st.b,st.k)
 	if st.b[st.k] == 's' {
 		if st.ends("sses") {
 			st.k -= 2
 		}
 		if st.ends("ies") {
-			st.r("i")
+			st.setto("i")
 		}
 		if st.b[st.k-1] != 's' {
 			st.k--
 		}
 
 	}
-// 	println(st.b,st.k)
+	// 	println(st.b,st.k)
 	if st.ends("eed") {
 	} else if st.ends("ed") || (st.ends("ing") && st.vowelinstem()) {
 		st.k = st.j
@@ -429,7 +435,8 @@ func (st *Stemmer) step1ab() {
 // 
 // 	/* step1c(z) turns terminal y to i when there is another vowel in the stem. */
 // 
-func (st Stemmer) step1c() {
+func (st *Stemmer) step1c() {
+
 	if st.ends("y") && st.vowelinstem() {
 		st.b = st.b[:len(st.b)-1]
 		st.b += "i"
@@ -445,9 +452,11 @@ func (st Stemmer) step1c() {
 // 	-ation) maps to -ize etc. note that the string before the suffix must give
 // 	m(z) > 0. */
 // 
-func (st Stemmer) step2() {
-	if st.k < 3 {return} //think it is needed to avoid to short words
-	
+func (st *Stemmer) step2() {
+	if st.k < 3 {
+		return
+	} //think it is needed to avoid to short words
+
 	switch st.b[st.k-1] {
 	case 'a':
 		if st.ends("ational") {
@@ -527,7 +536,7 @@ func (st Stemmer) step2() {
 			break
 		}
 	case 't':
-// 		println("t2:",st.b,st.k,st.j)
+		// 		println("t2:",st.b,st.k,st.j)
 		if st.ends("aliti") {
 			st.r("al")
 			break
@@ -588,9 +597,11 @@ func (st Stemmer) step2() {
 // 
 // 	/* step3(z) deals with -ic-, -full, -ness etc. similar strategy to step2. */
 // 
-func (st Stemmer) step3() {
-	if st.k < 3 {return} 
-// 	
+func (st *Stemmer) step3() {
+	if st.k < 3 {
+		return
+	}
+	// 	
 	switch st.b[st.k] {
 	case 'e':
 		if st.ends("icate") {
@@ -637,11 +648,13 @@ func (st Stemmer) step3() {
 // 
 // 	/* step4(z) takes off -ant, -ence etc., in context <c>vcvc<v>. */
 // 
-func (st Stemmer) step4() {
-	if st.k < 3 {return} 
-	st.printS()
-// 	println("Step4")
-// 	st.j = st.k
+func (st *Stemmer) step4() {
+	if st.k < 3 {
+		return
+	}
+	// 	st.printS()
+	// 	println("Step4")
+	// 	st.j = st.k
 	switch st.b[st.k-1] {
 	case 'a':
 		if st.ends("al") {
@@ -688,9 +701,9 @@ func (st Stemmer) step4() {
 		}
 		return
 	case 'o':
-// 		st.printS()
-// 		println("here",st.b,st.k,st.j)
-		if st.k <= 3{
+		// 		st.printS()
+		// 		println("here",st.b,st.k,st.j)
+		if st.k <= 3 {
 			return
 		}
 		if st.ends("ion") && (st.b[st.j] == 's' || st.b[st.j] == 't') {
@@ -770,8 +783,10 @@ func (st Stemmer) step4() {
 // 	/* step5(z) removes a final -e if m(z) > 1, and changes -ll to -l if
 // 	m(z) > 1. */
 // 
-func (st Stemmer) step5() {
-	if st.k < 3 {return} 
+func (st *Stemmer) step5() {
+	if st.k < 3 {
+		return
+	}
 	st.j = st.k
 
 	if st.b[st.k] == 'e' {
@@ -802,11 +817,11 @@ func (st Stemmer) step5() {
 // 	length, so 0 <= k' <= k.
 // 	*/
 // 
-func (st Stemmer) Stem(in string) (out string, err os.Error) {
+func (st *Stemmer) Stem(in string) (out string, err os.Error) {
 	st.b = in
-	st.k = len(in) -1
+	st.k = len(in) - 1
 	st.j = st.k
-// 	println("stem this :",in)
+	// 	println("stem this :",in)
 	st.step1ab()
 	st.step1c()
 	st.step2()
@@ -814,8 +829,8 @@ func (st Stemmer) Stem(in string) (out string, err os.Error) {
 	st.step4()
 	st.step5()
 
-	out = st.b[:st.k]
-// 	println("stemmed :",out)
+	out = st.b[:st.k+1]
+	// 	println("stemmed :",out)
 	return out, err
 }
 // 	extern int stem(struct stemmer * z, char * b, int k)

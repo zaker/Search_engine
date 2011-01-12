@@ -23,6 +23,7 @@ func cleanS(s string) (out []string) {
 	// 	remove symbols and numbers
 	r, _ := regexp.Compile("[^a-z]")
 
+	s = strings.ToLower(s)
 	s = r.ReplaceAllString(s, " ")
 	// 	s = strings.Replace(s, ".", " ", -1)
 	// 	s = strings.Replace(s, "'", " ", -1)
@@ -48,7 +49,7 @@ func cleanS(s string) (out []string) {
 	for i := range tmp {
 
 		if len(tmp[i]) > 3 {
-			stem,_ := st.Stem(tmp[i])
+			stem, _ := st.Stem(tmp[i])
 			out = append(out, stem)
 		}
 	}
