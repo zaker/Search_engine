@@ -2,12 +2,12 @@ package main
 
 
 import (
-	"strings"
+// 	"strings"
 	"os"
 	"bytes"
 	"gob"
 	"fmt"
-	"regexp"
+// 	"regexp"
 )
 
 
@@ -18,49 +18,9 @@ func NewInvertMap() InvertMap {
 	return make(InvertMap)
 }
 
-func cleanS(s string) (out []string) {
-
-	// 	remove symbols and numbers
-	r, _ := regexp.Compile("[^a-z]")
-
-	s = strings.ToLower(s)
-	s = r.ReplaceAllString(s, " ")
-	// 	s = strings.Replace(s, ".", " ", -1)
-	// 	s = strings.Replace(s, "'", " ", -1)
-	// 	s = strings.Replace(s, ",", " ", -1)
-	// 	s = strings.Replace(s, "/", " ", -1)
-	// 	s = strings.Replace(s, "-", " ", -1)
-	// 	s = strings.Replace(s, "=", " ", -1)
-	// 	s = strings.Replace(s, "(", " ", -1)
-	// 	s = strings.Replace(s, ")", " ", -1)
-	// 	s = strings.Replace(s, "0", " ", -1)
-	// 	s = strings.Replace(s, "1", " ", -1)
-	// 	s = strings.Replace(s, "2", " ", -1)
-	// 	s = strings.Replace(s, "3", " ", -1)
-	// 	s = strings.Replace(s, "4", " ", -1)
-	// 	s = strings.Replace(s, "5", " ", -1)
-	// 	s = strings.Replace(s, "6", " ", -1)
-	// 	s = strings.Replace(s, "7", " ", -1)
-	// 	s = strings.Replace(s, "8", " ", -1)
-	// 	s = strings.Replace(s, "9", " ", -1)
-
-	tmp := strings.Fields(s)
-	st := NewStemmer()
-	for i := range tmp {
-
-		if len(tmp[i]) > 3 {
-			stem, _ := st.Stem(tmp[i])
-			out = append(out, stem)
-		}
-	}
-
-	return
-}
-
 
 func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
 
-	// TODO: make better stemmer
 	words := cleanS(doc)
 
 	for i := range words {
@@ -84,14 +44,6 @@ func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
 		}
 
 	}
-
-	// 	for i := range im["no"]{
-	// 		
-	// 		print(im["no"][i])
-	// 	}
-	// 	println()
-
-	// 	println(b.String())
 
 	return nil
 }

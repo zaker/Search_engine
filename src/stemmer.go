@@ -569,6 +569,10 @@ func (st *Stemmer) Stem(in string) (out string, err os.Error) {
 	st.k = len(in) - 1
 	st.j = st.k
 
+	if len(in) < 3 {
+		out = in
+		return 
+	}
 	st.step1ab()
 	st.step1c()
 	st.step2()
