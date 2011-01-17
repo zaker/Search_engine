@@ -4,7 +4,30 @@ import (
 	"os"
 	"path"
 	"fmt"
+	"regexp"
+	"strings"
 )
+
+func cleanS(s string) (out []string) {
+
+	// 	remove symbols and numbers
+	r, _ := regexp.Compile("[^a-z]")
+
+	s = strings.ToLower(s)
+	s = r.ReplaceAllString(s, " ")
+
+	tmp := strings.Fields(s)
+	st := NewStemmer()
+	for i := range tmp {
+
+// 		if len(tmp[i]) > 3 {
+		stem, _ := st.Stem(tmp[i])
+		out = append(out, stem)
+// 		}
+	}
+
+	return
+}
 
 func contents(filename string) (string, os.Error) {
 	f, err := os.Open(filename, os.O_RDONLY, 0)

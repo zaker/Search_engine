@@ -94,18 +94,5 @@ func (dm DocMap) DocReader() (err os.Error) {
 
 	}
 
-	// 	println("|",dm[52].I,"|")
-	// 	println("|",dm[52].T,"|")
-	// 	println("|",dm[52].A,"|")
-	// 	println("|",dm[52].B,"|")
-	// 	println("|", dm[52].W, "|")
-	// 
-	// 	for i := range dm {
-	// 		// 	for i := 0 ; i < len(dm);i++{
-	// 		if len(dm[i].A) < 4 {
-	// 			println(dm[i].A, dm[i].I)
-	// 		}
-	// 	}
-
 	return nil
 }

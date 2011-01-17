@@ -4,7 +4,7 @@ import (
 	"sort"
 	"os"
 )
-
+ 
 
 func main() {
 
@@ -21,11 +21,6 @@ func main() {
 	qm.QuerryReader()
 
 	im := NewInvertMap()
-
-	// 	for i := range dm {
-	// 
-	// 		im.AddTo(dm[i].W, dm[i].I)
-	// 	}
 
 	err = im.DocMToInM(dm)
 
@@ -49,9 +44,25 @@ func main() {
 	// 	sa := sort.StringArray(words[0:])
 	sort.SortStrings(words)
 
-	for i := range words {
-		println(words[i])
-	}
+// 	for i := range words {
+// 		println(words[i])
+// 	}
 	println(len(im), len(words))
-	// 	println(i)
+// 	println(i)
+	println(qm[4].W)
+	for i := range qm[4].S{
+		q := qm[4].S[i]
+// 		println()
+
+		a := im[q]
+		
+		for j:= range a{
+			print(a[j],",")
+		}
+		println()
+		
+	}
+	
+	qm.Print(3)
+		
 }
