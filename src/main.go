@@ -50,6 +50,7 @@ func main() {
 	println(len(im), len(words))
 // 	println(i)
 	println(qm[4].W)
+// 	st map[string][]int
 	for i := range qm[4].S{
 		q := qm[4].S[i]
 // 		println()

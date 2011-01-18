@@ -24,26 +24,28 @@ func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
 	words := cleanS(doc)
 
 	for i := range words {
-
-		// 		println(words[i])
-		if im[words[i]] == nil {
-			im[words[i]] = append(im[words[i]], index)
-		} else {
-			chk := true
-			for j := range im[words[i]] {
-
-				if im[words[i]][j] == index {
-					chk = false
-				}
-			}
-
-			if chk {
-				im[words[i]] = append(im[words[i]], index)
-			}
-
-		}
-
+		im[words[i]] = append(im[words[i]], index)
+		
 	}
+// 		// 		println(words[i])
+// 		if im[words[i]] == nil {
+// 			im[words[i]] = append(im[words[i]], index)
+// 		} else {
+// 			chk := true
+// // 			for j := range im[words[i]] {
+// 
+// // 				if im[words[i]][j] == index {
+// // 					chk = false
+// // 				}
+// // 			}
+// 
+// 			if chk {
+// 				im[words[i]] = append(im[words[i]], index)
+// 			}
+// 
+// 		}
+// 
+// 	}
 
 	return nil
 }
