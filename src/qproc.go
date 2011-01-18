@@ -6,49 +6,40 @@ import (
 // 	"strconv"
 )
 
-type terms map[string]termW
+type tWeigths []tWeigth
 
-type termW struct{
-	
-	
+type tWeigth struct{
 	doc int
-	num int
 	weight float64
 	
 }
 
-func unique(in []int)(out []int){
-	sa := sort.IntArray(in)
-	
 
+func (tw tWeigths)Len() int{
 	
-	for i := range sa {
-		chk := true
-		for j := range out {
-			if sa[i] == out[j] {
-// 				t++
-				chk = false
-				break
-				
-			}
-		}
-		if chk{
-			out = append(out,sa[i])
-			
-// 			tot++
-		}
-		
-	}
-	return
+	return len(tw)
 }
-func totalUnique(im InvertMap,term string)(tot int){
+func (tw tWeigths)Less(i,j int) bool{
 	
-// 	tot := 0
-// 	b := len(im[term]) 
-	tot = len(im[term])
-	return 
-	
+	return tw[i].weight < tw[j].weight
 }
+func (tw tWeigths)Swap(i,j int){
+	
+	tw[i],tw[j] = tw[j],tw[i]
+}
+func (tw tWeigths)Sort(){
+	
+	sort.Sort(tw)
+}
+
+
+// type tWeigth interface{
+// 	doc int
+// 	weight float64
+// 	
+// }
+type docWeight map[int]float64
+
 
 func weigh_term(dm DocMap,term string ,id ,num , tot int )(wght float64){
 	
@@ -79,42 +70,38 @@ func weigh_term(dm DocMap,term string ,id ,num , tot int )(wght float64){
 	
 }
 
-// func weigh_querry(dm DocMap,qm QuerryMap,im InvertMap,id,iq int )(wght float64){
-// 	
-// 	
-// 	for i := range qm[iq].S{
-// 		tot := totalUnique(im,qm[iq].S[i])
-// // 		if tot > 0 {
-// // 			println(tot,qm[iq].I,qm[iq].S[i])
-// // 		}
-// 		wght += weigh_term(dm,qm[iq].S[i],tot,id)
-// 	}
-// 	if wght > 0.0 {
-// 		println( wght)
-// 	}
-// 	
-// 	return
-// 	
-// }
 
 
 
 func QuerryProc(dm DocMap,qm QuerryMap,im InvertMap){
 	qs := qm[1].S
-	
+	dw := make(docWeight,1)
 	for i:= range qs {
 		term_docs := im[qs[i]]
-		println(qs[i])
+// 		println(qs[i])
 		tot := len(term_docs)
-		var w float64
+// 		var w float64
 		for j := range term_docs {
 			d,n := term_docs.Get(j)
 // 			println(i,j,qs[i],term_docs[j])
 // 			println(d,n,tot)
 // 			weigh_querry(dm,qm,im,term_docs[j],1)
-			w += weigh_term(dm,qs[i],d,n, tot)
+			dw[d] += weigh_term(dm,qs[i],d,n, tot)
 // 			break
 		}
-		print(w)
+// 		print(w)
+	}
+	tw := make(tWeigths,1)
+	for i := range dw {
+
+		tw = append(tw,tWeigth{doc:i,weight:dw[i]})
+		
+	}
+	tw.Sort()
+	tw = tw[len(tw)-20:]
+	for i := range tw {
+// 		r  := len(tw) - i -1
+		println(tw[i].doc,tw[i].weight, qm[1].W)
+		println(dm[tw[i].doc].W)
 	}
 }
