@@ -47,23 +47,23 @@ func main() {
 // 	for i := range words {
 // 		println(words[i])
 // 	}
-	println(len(im), len(words))
-// 	println(i)
-	println(qm[4].W)
-// 	st map[string][]int
-	for i := range qm[4].S{
-		q := qm[4].S[i]
+// 	println(len(im), len(words))
+// // 	println(i)
+// 	println(qm[4].W)
+// // 	st map[string][]int
+// 	for i := range qm[4].S{
+// 		q := qm[4].S[i]
+// // 		println()
+// 
+// 		a := im[q]
+// 		
+// 		for j:= range a{
+// 			print(a[j],",")
+// 		}
 // 		println()
-
-		a := im[q]
-		
-		for j:= range a{
-			print(a[j],",")
-		}
-		println()
-		
-	}
+// 		
+// 	}
 	
-	qm.Print(3)
+	QuerryProc(dm,qm,im)
 		
 }
