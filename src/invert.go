@@ -19,14 +19,26 @@ func NewInvertMap() InvertMap {
 }
 
 
-func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
+// func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
+// 
+// 	words := cleanS(doc)
+// 
+// 	for i := range words {
+// 		im[words[i]] = append(im[words[i]], index)
+// 		
+// 	}
+// }
+func (im InvertMap) AddStemTo(doc []string, index int) (err os.Error) {
 
-	words := cleanS(doc)
+// 	words := cleanS(doc)
 
-	for i := range words {
-		im[words[i]] = append(im[words[i]], index)
+	for i := range doc {
+		im[doc[i]] = append(im[doc[i]], index)
 		
 	}
+	return
+}
+
 // 		// 		println(words[i])
 // 		if im[words[i]] == nil {
 // 			im[words[i]] = append(im[words[i]], index)
@@ -47,8 +59,8 @@ func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
 // 
 // 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 func (im InvertMap) LenDocs(key string) (l int) {
 
@@ -106,7 +118,7 @@ func (im *InvertMap) DocMToInM(dm DocMap) (err os.Error) {
 
 	for i := range dm {
 
-		err = im.AddTo(dm[i].W, dm[i].I)
+		err = im.AddStemTo(dm[i].S, dm[i].I)
 	}
 
 	if err != nil {

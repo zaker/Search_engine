@@ -13,6 +13,7 @@ type Doc struct {
 	A string
 	B string
 	W string
+	S []string
 }
 
 type DocMap map[int]Doc
@@ -47,7 +48,9 @@ func sToDoc(s string) (*Doc, os.Error) {
 
 	W := strings.TrimSpace(tmp[1])
 
-	return &Doc{I: I, T: T, A: A, B: B, W: W}, nil
+	S := cleanS(W)
+	
+	return &Doc{I: I, T: T, A: A, B: B, W: W, S:S}, nil
 }
 
 
