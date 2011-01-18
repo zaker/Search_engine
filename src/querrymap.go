@@ -17,15 +17,15 @@ type Querry struct {
 type QuerryMap map[int]Querry
 
 
-func (qm QuerryMap)Print(i int){
-	
+func (qm QuerryMap) Print(i int) {
+
 	println(qm[i].I)
 	println(qm[i].W)
 	for j := range qm[i].S {
-		
+
 		println(qm[i].S[j])
 	}
-	
+
 }
 
 func sToQuerry(s string) (*Querry, os.Error) {
@@ -43,13 +43,13 @@ func sToQuerry(s string) (*Querry, os.Error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	S := cleanS(W)
-// 	println(W)
-// 	qm.Print(4)
-// 	S := make([]string,2)
-	
-	return &Querry{I: I, W: W,S: S}, nil
+	// 	println(W)
+	// 	qm.Print(4)
+	// 	S := make([]string,2)
+
+	return &Querry{I: I, W: W, S: S}, nil
 }
 
 func NewQuerryMap() QuerryMap {
@@ -70,7 +70,7 @@ func (qm QuerryMap) addTo(s string) (err os.Error) {
 
 	qm[d.I] = *d
 
-// 	qm.Print(2)
+	// 	qm.Print(2)
 	return nil
 }
 func (qm QuerryMap) QuerryReader() (err os.Error) {
@@ -87,9 +87,7 @@ func (qm QuerryMap) QuerryReader() (err os.Error) {
 	}
 
 	QuerryStrings := strings.Split(Querries, ".I", -1)
-	
 
-	
 	for i := range QuerryStrings {
 		// 	for i := 0; i < 2; i++{
 		// 		println("w",i,QuerryStrings[i])

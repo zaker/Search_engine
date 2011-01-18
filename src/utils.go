@@ -20,10 +20,10 @@ func cleanS(s string) (out []string) {
 	st := NewStemmer()
 	for i := range tmp {
 
-// 		if len(tmp[i]) > 3 {
+		// 		if len(tmp[i]) > 3 {
 		stem, _ := st.Stem(tmp[i])
 		out = append(out, stem)
-// 		}
+		// 		}
 	}
 
 	return

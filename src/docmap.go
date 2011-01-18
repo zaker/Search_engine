@@ -49,8 +49,8 @@ func sToDoc(s string) (*Doc, os.Error) {
 	W := strings.TrimSpace(tmp[1])
 
 	S := cleanS(W)
-	
-	return &Doc{I: I, T: T, A: A, B: B, W: W, S:S}, nil
+
+	return &Doc{I: I, T: T, A: A, B: B, W: W, S: S}, nil
 }
 
 
