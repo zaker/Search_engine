@@ -35,22 +35,24 @@ func (tw tWeigths) Sort() {
 }
 
 func (tw tWeigths) Sum(tWs []tWeigths) {
-
-	for i := range tWs {
-		if i == 0 {
-			copy(tw, tWs[i])
-			continue
-		}
-		for j := range tWs[i] {
+	
+	
+	for i:= range tWs{
+		if i == 0{
+				copy(tw,tWs[i] )
+				continue
+			}
+		for j := range tWs[i]{
 			println(tWs[i][j].weight)
-			for k := range tw {
+			for k := range tw{
 				if tWs[i][j].doc == tw[k].doc {
-					tw[k].doc += tWs[i][j].doc
+					tw[k].doc += tWs[i][j].doc 
 				}
 			}
-
+			
 		}
-
+		
+		
 	}
 	return
 }
@@ -62,7 +64,7 @@ func (tw tWeigths) Sum(tWs []tWeigths) {
 type docWeight map[int]float64
 
 
-func weigh_term(dm DocMap, id, num, tot int) (wght float64) {
+func weigh_term(dm DocMap,id, num, tot int) (wght float64) {
 
 	ldoc := len(dm[id].S)
 	if ldoc <= 0 {
@@ -70,53 +72,52 @@ func weigh_term(dm DocMap, id, num, tot int) (wght float64) {
 	}
 
 	tf := float64(num) / float64(ldoc)
-	// 	println("in doc",ldoc,"num",num,"tot",tot)
+// 	println("in doc",ldoc,"num",num,"tot",tot)
 	tot_doc := len(dm)
 	l := math.Log(float64(tot_doc) / float64(tot))
-	// 	println("tot_doc",tot_doc,"l",l)
+// 	println("tot_doc",tot_doc,"l",l)
 	wght = l * float64(tf)
 	return
 
 }
-
 type Terms map[int]int
 
-type Term struct {
-	doc int
+type Term struct{
+	doc int 
 	num int
 }
 
-func exists(dm DocMap, rf []Reference) (terms Terms) {
+func exists(dm DocMap, rf []Reference)(terms Terms){
 	terms = make(Terms)
-	for i := range rf {
-		_, ok := dm[rf[i].DocNo]
-		if ok {
+	for i := range rf{
+		_,ok := dm[rf[i].DocNo]
+		if ok{
 			terms[rf[i].DocNo]++
 		}
 	}
 	return
 }
 
-func qProc(dm DocMap, im InvertMap, qs []string) (wT weightTable) {
+func qProc(dm DocMap, im InvertMap,qs []string) (wT weightTable){
 
 	wT = make(weightTable)
 	for i := range qs {
-		term_docs := exists(dm, im[qs[i]])
+		term_docs := exists(dm,im[qs[i]])
 		tot := len(term_docs)
 
 		for j := range term_docs {
-			d, n := j, term_docs[j]
-
+			d,n := j , term_docs[j]
+			
 			if len(wT[d]) < len(qs)-1 {
 				wT[d] = make([]float64, len(qs))
 			}
-			// 			println(qs[i])
-			wT[d][i] = weigh_term(dm, d, n, tot)
+// 			println(qs[i])
+			wT[d][i] = weigh_term(dm ,d, n, tot)
 		}
 	}
 	return
 }
-func (wT weightTable) Sum2Slice() (tW tWeigths) {
+func (wT weightTable)Sum2Slice()(tW tWeigths){
 	for i := range wT {
 		var sum float64
 		for j := range wT[i] {
@@ -128,66 +129,69 @@ func (wT weightTable) Sum2Slice() (tW tWeigths) {
 	tW.Sort()
 	return
 }
-func (wT weightTable) Add(wT2 weightTable) {
+func (wT weightTable)Add(wT2 weightTable)(){
 	for i := range wT2 {
-
-		// 		var sum float64
-		// 		_,ok := wT[i]
-		// 		if ok{
-		for j := range wT2[i] {
-			if len(wT[i]) < 1 {
-				wT[i] = make([]float64, 1)
+		
+// 		var sum float64
+// 		_,ok := wT[i]
+// 		if ok{
+			for j := range wT2[i] {
+				if len(wT[i]) < 1 {
+					wT[i] = make([]float64, 1)
+				}
+				wT[i][0] += wT2[i][j]
 			}
-			wT[i][0] += wT2[i][j]
-		}
-		// 		}
-		// 		tW = append(tW, tWeigth{doc: i, weight: sum})
+// 		}
+// 		tW = append(tW, tWeigth{doc: i, weight: sum})
 	}
 
-	// 	tW.Sort()
+// 	tW.Sort()
 	return
 }
 
-func QuerryProc(dm DocMap, qm QuerryMap, im InvertMap, querry int) {
+func QuerryProc(dm DocMap, qm QuerryMap, im InvertMap,querry int) {
 
-	wT := qProc(dm, im, qm[querry].S)
+	wT := qProc(dm,im,qm[querry].S)
 	tW := wT.Sum2Slice()
 	dm2 := NewDocMap()
-	tW = tW[:50]
+	if len(tW) > 50{
+		tW = tW[:50]
+	}
 	for i := range tW {
 		dm2[tW[i].doc] = dm[tW[i].doc]
 	}
-	// 	println(len(dm2),len(tW))
-	// 		for i := range tW {
-	// 		println("termw",i, tW[i].doc, tW[i].weight)
-	// 	}
-	// // 	var tWs []tWeigths
-
+// 	println(len(dm2),len(tW))
+// 		for i := range tW {
+// 		println("termw",i, tW[i].doc, tW[i].weight)
+// 	}
+// // 	var tWs []tWeigths
+	
 	wT2 := make(weightTable)
 	for i := range tW {
-		tempW := qProc(dm2, im, dm[tW[i].doc].S)
-
+		tempW := qProc(dm2,im,dm[tW[i].doc].S)
+		
 		wT2.Add(tempW)
-
-		// 		for j := range tempW {
-		// 			
-		// // 			println(j,tempW[j].doc,tempW[j].weight)
-		// 		}
-		// // 		tWs = append(tWs,tempW)
+		
+// 		for j := range tempW {
+// 			
+// // 			println(j,tempW[j].doc,tempW[j].weight)
+// 		}
+// // 		tWs = append(tWs,tempW)
 	}
-
-	// 	tW2 := wT2.Sum2Slice()
-	// 	tW2.Sum(tWs)
-	// 	tW2.Sort()
-	// 	for i := range tW2 {
-	// 		println(i, tW2[i].doc, tW2[i].weight)
-	// 	}
+	
+// 	tW2 := wT2.Sum2Slice()
+// 	tW2.Sum(tWs)
+// 	tW2.Sort()
+// 	for i := range tW2 {
+// 		println(i, tW2[i].doc, tW2[i].weight)
+// 	}
 }
 
 func QuerriesProc(dm DocMap, qm QuerryMap, im InvertMap) {
 
-	for i := range qm {
-		QuerryProc(dm, qm, im, i)
+	for i:= 1;i <= len(qm);i++ {
+		println(i)
+		QuerryProc(dm , qm , im ,i) 
 	}
 
 }
