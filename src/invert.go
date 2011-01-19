@@ -2,8 +2,8 @@ package main
 
 
 import (
-	"strings"
-	"strconv"
+	// 	"strings"
+	// 	"strconv"
 	"os"
 	"bytes"
 	"gob"
@@ -12,26 +12,31 @@ import (
 )
 
 
-type InvertMap map[string]Inv
-
-
-type Inv []string
-
-func (in Inv) Get(i int) (d, n int) {
-
-	spl := strings.Split(in[i], ":", -1)
-	d, _ = strconv.Atoi(spl[0])
-	n, _ = strconv.Atoi(spl[1])
-	return
+type Reference struct {
+	DocNo  int
+	WordNo int
 }
-func (in Inv) Set(i, d, n int) {
 
-	// 	spl := strings.Split(in[i],":",-1)
-	// 	d,_ = strconv.Atoi(spl[0])
-	// 	n,_ = strconv.Atoi(spl[1])
-	in[i] = strconv.Itoa(d) + ":" + strconv.Itoa(n)
-	return
-}
+type InvertMap map[string][]Reference
+
+// func (ref []Reference) Get(i int) (d, n int) {
+// 
+// // 	spl := strings.Split(in[i], ":", -1)
+// // 	d, _ = strconv.Atoi(spl[0])
+// // 	n, _ = strconv.Atoi(spl[1])
+// 
+// 	d = ref[i].DocNo
+// 	n = ref[i].WordNo
+// 	return
+// }
+// func (in Inv) Set(i, d, n int) {
+// 
+// 	// 	spl := strings.Split(in[i],":",-1)
+// 	// 	d,_ = strconv.Atoi(spl[0])
+// 	// 	n,_ = strconv.Atoi(spl[1])
+// 	in[i] = strconv.Itoa(d) + ":" + strconv.Itoa(n)
+// 	return
+// }
 
 func NewInvertMap() InvertMap {
 	return make(InvertMap)
@@ -47,56 +52,65 @@ func NewInvertMap() InvertMap {
 // 		
 // 	}
 // }
-func (im InvertMap) AddStemTo(doc []string, index int) (err os.Error) {
+func (im InvertMap) AddStemTo(doc []string, DocNo int) (err os.Error) {
 
 	// 	words := cleanS(doc)
-
-	for i := range doc {
-		// 		im[doc[i]] = append(im[doc[i]], index)
-		// 		
-		// 	}
-		// 	return
-		// }
-
-		// 		println(words[i])
-
-		// 		if this is the first time the word is added
-		if im[doc[i]] == nil {
-			// 			in := new(invert)
-			// 			in.doc = i
-			// 			println("test")
-			in := strconv.Itoa(index) + ":" + strconv.Itoa(1)
-			im[doc[i]] = append(im[doc[i]], in)
-		} else {
-			chk := true
-			for j := range im[doc[i]] {
-				// 				if there already exist an inverted doc, just add to num
-				// 				println(im[doc[i]][j])
-				// 				spl := strings.Split(im[doc[i]][j],":",-1)
-				// 				d,_ := strconv.Atoi(spl[0])
-				// 				n,_ := strconv.Atoi(spl[1])
-				d, n := im[doc[i]].Get(j)
-				if d == index {
-					n++
-					im[doc[i]][j] = strconv.Itoa(d) + ":" + strconv.Itoa(n)
-					chk = false
-				}
-
-			}
-
-			if chk {
-
-				in := strconv.Itoa(index) + ":" + strconv.Itoa(1)
-				im[doc[i]] = append(im[doc[i]], in)
-				// 			println("test")
-				// 				im[doc[i]] = append(im[doc[i]], index)
-			}
-
+	for wordNo, word := range doc {
+		ref, ok := im[word]
+		if !ok {
+			ref = nil
 		}
-
+		im[word] = append(ref, Reference{DocNo, wordNo})
 	}
-	return nil
+	return
 }
+
+// 	for i := range doc {
+// 		// 		im[doc[i]] = append(im[doc[i]], index)
+// 		// 		
+// 		// 	}
+// 		// 	return
+// 		// }
+// 
+// 		// 		println(words[i])
+// 
+// 		// 		if this is the first time the word is added
+// 		if im[doc[i]] == nil {
+// 			// 			in := new(invert)
+// 			// 			in.doc = i
+// 			// 			println("test")
+// 			in := strconv.Itoa(index) + ":" + strconv.Itoa(1)
+// 			im[doc[i]] = append(im[doc[i]], in)
+// 		} else {
+// 			chk := true
+// 			for j := range im[doc[i]] {
+// 				// 				if there already exist an inverted doc, just add to num
+// 				// 				println(im[doc[i]][j])
+// 				// 				spl := strings.Split(im[doc[i]][j],":",-1)
+// 				// 				d,_ := strconv.Atoi(spl[0])
+// 				// 				n,_ := strconv.Atoi(spl[1])
+// 				d, n := im[doc[i]].Get(j)
+// 				if d == index {
+// 					n++
+// 					im[doc[i]][j] = strconv.Itoa(d) + ":" + strconv.Itoa(n)
+// 					chk = false
+// 				}
+// 
+// 			}
+// 
+// 			if chk {
+// 
+// 				in := strconv.Itoa(index) + ":" + strconv.Itoa(1)
+// 				im[doc[i]] = append(im[doc[i]], in)
+// 				// 			println("test")
+// 				// 				im[doc[i]] = append(im[doc[i]], index)
+// 			}
+// 
+// 		}
+// 
+// 	}
+// 	return nil
+// }
 
 func (im InvertMap) LenDocs(key string) (l int) {
 
@@ -138,6 +152,20 @@ func (im InvertMap) Save(im_filename string) (err os.Error) {
 		return
 	}
 
+	return nil
+}
+func EncodeAndDecode(in, out interface{}) os.Error {
+	b := new(bytes.Buffer)
+	enc := gob.NewEncoder(b)
+	err := enc.Encode(in)
+	if err != nil {
+		return err
+	}
+	dec := gob.NewDecoder(b)
+	err = dec.Decode(out)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -64,6 +64,6 @@ func main() {
 	// 		
 	// 	}
 
-	QuerryProc(dm, qm, im)
+	QuerriesProc(dm, qm, im)
 
 }
