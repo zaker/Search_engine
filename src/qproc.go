@@ -6,7 +6,10 @@ import (
 	// 	"strconv"
 )
 
+type weightTable map[int][]float64
+
 type tWeigths []tWeigth
+
 
 type tWeigth struct {
 	doc    int
@@ -20,7 +23,7 @@ func (tw tWeigths) Len() int {
 }
 func (tw tWeigths) Less(i, j int) bool {
 
-	return tw[i].weight < tw[j].weight
+	return tw[i].weight > tw[j].weight
 }
 func (tw tWeigths) Swap(i, j int) {
 
@@ -71,33 +74,40 @@ func weigh_term(dm DocMap, term string, id, num, tot int) (wght float64) {
 
 func QuerryProc(dm DocMap, qm QuerryMap, im InvertMap) {
 	qs := qm[1].S
-	dw := make(docWeight, 1)
+	// 	dw := make(docWeight, 1)
+	wT := make(weightTable)
 	for i := range qs {
 		term_docs := im[qs[i]]
 		// 		println(qs[i])
 		tot := len(term_docs)
-		// 		var w float64
+
 		for j := range term_docs {
+
+			term_docs := im[qs[i]]
 			d, n := term_docs.Get(j)
-			// 			println(i,j,qs[i],term_docs[j])
-			// 			println(d,n,tot)
-			// 			weigh_querry(dm,qm,im,term_docs[j],1)
-			dw[d] += weigh_term(dm, qs[i], d, n, tot)
+			if len(wT[d]) < len(qs)-1 {
+				wT[d] = make([]float64, len(qs))
+			}
+			wT[d][i] = weigh_term(dm, qs[i], d, n, tot)
 			// 			break
 		}
-		// 		print(w)
 	}
-	tw := make(tWeigths, 1)
-	for i := range dw {
+	tW := make(tWeigths, 1)
+	for i := range wT {
+		var sum float64
+		for j := range wT[i] {
+			sum += wT[i][j]
+			// 			print(wT[i][j]," ")
+		}
+		tW = append(tW, tWeigth{doc: i, weight: sum})
+		// 		println(i,sum)
+	}
 
-		tw = append(tw, tWeigth{doc: i, weight: dw[i]})
+	tW.Sort()
+	tW = tW[:20]
 
+	for i := range tW {
+		println(i, tW[i].doc, tW[i].weight)
 	}
-	tw.Sort()
-	tw = tw[len(tw)-20:]
-	for i := range tw {
-		// 		r  := len(tw) - i -1
-		println(tw[i].doc, tw[i].weight, qm[1].W)
-		println(dm[tw[i].doc].W)
-	}
+
 }
