@@ -30,6 +30,6 @@ func main() {
 
 
 // 	QuerriesProc(dm, qm, im)
-	wServer()
+	wServer(dm,im)
 
 }
