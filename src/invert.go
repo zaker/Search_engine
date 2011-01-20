@@ -2,13 +2,10 @@ package main
 
 
 import (
-	// 	"strings"
-	// 	"strconv"
 	"os"
 	"bytes"
 	"gob"
 	"fmt"
-	// 	"regexp"
 )
 
 
@@ -19,39 +16,12 @@ type Reference struct {
 
 type InvertMap map[string][]Reference
 
-// func (ref []Reference) Get(i int) (d, n int) {
-// 
-// // 	spl := strings.Split(in[i], ":", -1)
-// // 	d, _ = strconv.Atoi(spl[0])
-// // 	n, _ = strconv.Atoi(spl[1])
-// 
-// 	d = ref[i].DocNo
-// 	n = ref[i].WordNo
-// 	return
-// }
-// func (in Inv) Set(i, d, n int) {
-// 
-// 	// 	spl := strings.Split(in[i],":",-1)
-// 	// 	d,_ = strconv.Atoi(spl[0])
-// 	// 	n,_ = strconv.Atoi(spl[1])
-// 	in[i] = strconv.Itoa(d) + ":" + strconv.Itoa(n)
-// 	return
-// }
-
+// Creates a new inverted index
 func NewInvertMap() InvertMap {
 	return make(InvertMap)
 }
 
 
-// func (im InvertMap) AddTo(doc string, index int) (err os.Error) {
-// 
-// 	words := cleanS(doc)
-// 
-// 	for i := range words {
-// 		im[words[i]] = append(im[words[i]], index)
-// 		
-// 	}
-// }
 func (im InvertMap) AddStemTo(doc []string, DocNo int) (err os.Error) {
 
 	// 	words := cleanS(doc)
@@ -64,63 +34,21 @@ func (im InvertMap) AddStemTo(doc []string, DocNo int) (err os.Error) {
 	}
 	return
 }
+// Deletes map entry
+func (im InvertMap) DeleteStem(s string) (err os.Error) {
 
-// 	for i := range doc {
-// 		// 		im[doc[i]] = append(im[doc[i]], index)
-// 		// 		
-// 		// 	}
-// 		// 	return
-// 		// }
-// 
-// 		// 		println(words[i])
-// 
-// 		// 		if this is the first time the word is added
-// 		if im[doc[i]] == nil {
-// 			// 			in := new(invert)
-// 			// 			in.doc = i
-// 			// 			println("test")
-// 			in := strconv.Itoa(index) + ":" + strconv.Itoa(1)
-// 			im[doc[i]] = append(im[doc[i]], in)
-// 		} else {
-// 			chk := true
-// 			for j := range im[doc[i]] {
-// 				// 				if there already exist an inverted doc, just add to num
-// 				// 				println(im[doc[i]][j])
-// 				// 				spl := strings.Split(im[doc[i]][j],":",-1)
-// 				// 				d,_ := strconv.Atoi(spl[0])
-// 				// 				n,_ := strconv.Atoi(spl[1])
-// 				d, n := im[doc[i]].Get(j)
-// 				if d == index {
-// 					n++
-// 					im[doc[i]][j] = strconv.Itoa(d) + ":" + strconv.Itoa(n)
-// 					chk = false
-// 				}
-// 
-// 			}
-// 
-// 			if chk {
-// 
-// 				in := strconv.Itoa(index) + ":" + strconv.Itoa(1)
-// 				im[doc[i]] = append(im[doc[i]], in)
-// 				// 			println("test")
-// 				// 				im[doc[i]] = append(im[doc[i]], index)
-// 			}
-// 
-// 		}
-// 
-// 	}
-// 	return nil
-// }
+	im[s] = nil, false
+	return
+}
 
+// Returns size of map
 func (im InvertMap) LenDocs(key string) (l int) {
-
-	// 	ar := im[key]
 
 	return len(im[key])
 
 }
 
-
+//  Loads index from file
 func (im InvertMap) Load(im_filename string) (err os.Error) {
 
 	str, err := contents(im_filename)
@@ -132,7 +60,7 @@ func (im InvertMap) Load(im_filename string) (err os.Error) {
 
 	return nil
 }
-
+// Stores the inverted index to file
 func (im InvertMap) Save(im_filename string) (err os.Error) {
 
 	b := new(bytes.Buffer)
@@ -152,20 +80,6 @@ func (im InvertMap) Save(im_filename string) (err os.Error) {
 		return
 	}
 
-	return nil
-}
-func EncodeAndDecode(in, out interface{}) os.Error {
-	b := new(bytes.Buffer)
-	enc := gob.NewEncoder(b)
-	err := enc.Encode(in)
-	if err != nil {
-		return err
-	}
-	dec := gob.NewDecoder(b)
-	err = dec.Decode(out)
-	if err != nil {
-		return err
-	}
 	return nil
 }
 

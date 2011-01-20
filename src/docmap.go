@@ -18,7 +18,7 @@ type Doc struct {
 
 type DocMap map[int]Doc
 
-
+// Converts the cran1400 file to a map of documents
 func sToDoc(s string) (*Doc, os.Error) {
 
 	s = strings.Replace(s, "\n", " ", -1)
@@ -53,12 +53,12 @@ func sToDoc(s string) (*Doc, os.Error) {
 	return &Doc{I: I, T: T, A: A, B: B, W: W, S: S}, nil
 }
 
-
+// Creates a new document map
 func NewDocMap() DocMap {
 
 	return make(DocMap)
 }
-
+// Adds instances to the document map
 func (dm DocMap) addTo(s string) (err os.Error) {
 
 	if s == "" {
@@ -74,6 +74,8 @@ func (dm DocMap) addTo(s string) (err os.Error) {
 
 	return nil
 }
+
+// Reads from the cran1400 file and maps it
 func (dm DocMap) DocReader() (err os.Error) {
 
 	Docs, err := contents("../data/cran.all.1400")
@@ -89,10 +91,7 @@ func (dm DocMap) DocReader() (err os.Error) {
 
 	DocStrings := strings.Split(Docs, ".I", -1)
 
-	// 	println(DocStrings[3])
-
 	for i := range DocStrings {
-		// 	for i = 0; i < 2; i++{
 		dm.addTo(DocStrings[i])
 
 	}
