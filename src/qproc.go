@@ -107,7 +107,7 @@ func qProc(dm DocMap, im InvertMap, qs []string) (wT weightTable) {
 		for j := range term_docs {
 			d, n := j, term_docs[j]
 
-			if len(wT[d]) < len(qs)-1 {
+			if len(wT[d]) < len(qs) {
 				wT[d] = make([]float64, len(qs))
 			}
 			// 			println(qs[i])

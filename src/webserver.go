@@ -1,44 +1,72 @@
 package main
 
 import (
-    "flag"
-    "http"
-    "io"
-    "log"
-    "template"
+	"flag"
+	"http"
+	"io"
+	"log"
+	"template"
+	"fmt"
+	"strconv"
 )
 
 var addr = flag.String("addr", ":1400", "http service address") // as in cran 1400
 var fmap = template.FormatterMap{
-    "html": template.HTMLFormatter,
-    "url+html": UrlHtmlFormatter,
-    "str": UrlHtmlFormatter2,
+	"html":     template.HTMLFormatter,
+	"url+html": UrlHtmlFormatter,
 }
 var templ = template.MustParse(templateStr, fmap)
 
-func wServer(dm DocMap,im InvertMap) {
-    flag.Parse()
-    http.Handle("/", http.HandlerFunc(Search))
-    err := http.ListenAndServe(*addr, nil)
-    if err != nil {
-        log.Exit("ListenAndServe:", err)
-    }
+var q_in = make(chan string)
+var a_out = make(chan string)
+
+func handleQuerry(dm DocMap, im InvertMap){
+	for {
+	s := <- q_in
+	qs := cleanS(s)
+	res := QuerryProc(dm,im,qs)
+	println(s)
+	
+	
+	out := ""
+	       for i:= range res{
+		       
+		       tmp := strconv.Itoa(i+1) + ". doc[" + strconv.Itoa(res[i].doc) +"]  "+ dm[res[i].doc].W + "<br><br>"
+		       out += tmp 
+		       println(tmp)
+	       }
+	       a_out <-out
+	}
+	
+}
+
+func wServer(dm DocMap, im InvertMap) {
+	flag.Parse()
+// 	fmt.Println("%d\n",7)
+	go handleQuerry(dm,im)
+	http.Handle("/", http.HandlerFunc(Search))
+	err := http.ListenAndServe(*addr, nil)
+	if err != nil {
+		log.Exit("ListenAndServe:", err)
+	}
 }
 
 func QR(w http.ResponseWriter, req *http.Request) {
-    templ.Execute(req.FormValue("s"), w)
-}
-
-func Search(w http.ResponseWriter, req *http.Request){
 	templ.Execute(req.FormValue("s"), w)
 }
 
-func UrlHtmlFormatter(w io.Writer, fmt string, v ...interface{}) {
-    template.HTMLEscape(w, []byte(http.URLEscape(v[0].(string))))
+func Search(w http.ResponseWriter, req *http.Request) {
+// 	println(req.FormValue("s"))
+	s := req.FormValue("s")
+	q_in <- s
+	templ.Execute(s, w)
+	res := <- a_out
+	fmt.Fprintln(w, "Querry here <br>" + res)
 }
-func UrlHtmlFormatter2(w io.Writer, fmt string, v ...interface{}) {
-    template.HTMLEscape(w, []byte("hello <br>"))
-    template.StringFormatter(w, "world",v...)
+
+func UrlHtmlFormatter(w io.Writer, fmt string, v ...interface{}) {
+	template.HTMLEscape(w, []byte(http.URLEscape(v[0].(string))))
+// 	fmt.Fprintln(w, "dsdsd\nasdfasdf\tasdfasdf\"tile\"")
 }
 
 const templateStr = `
@@ -52,9 +80,6 @@ const templateStr = `
 />
 <br>
 {@|html}
-<br>
-<br>
-{@|str}
 <br>
 <br>
 {.end}

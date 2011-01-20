@@ -1,7 +1,7 @@
 package main
 
 import (
-// 	"sort"
+	// 	"sort"
 	"os"
 )
 
@@ -28,8 +28,7 @@ func main() {
 		println(err.String())
 	}
 
-
-// 	QuerriesProc(dm, qm, im)
-	wServer(dm,im)
+	// 	QuerriesProc(dm, qm, im)
+	wServer(dm, im)
 
 }
