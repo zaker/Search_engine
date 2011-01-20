@@ -25,7 +25,7 @@ func handleQuerry(dm DocMap, im InvertMap){
 	s := <- q_in
 	qs := cleanS(s)
 	res := QuerryProc(dm,im,qs)
-	println(s)
+// 	println(s)
 	
 	
 	out := ""
@@ -33,7 +33,7 @@ func handleQuerry(dm DocMap, im InvertMap){
 		       
 		       tmp := strconv.Itoa(i+1) + ". doc[" + strconv.Itoa(res[i].doc) +"]  "+ dm[res[i].doc].W + "<br><br>"
 		       out += tmp 
-		       println(tmp)
+// 		       println(tmp)
 	       }
 	       a_out <-out
 	}
@@ -61,7 +61,7 @@ func Search(w http.ResponseWriter, req *http.Request) {
 	q_in <- s
 	templ.Execute(s, w)
 	res := <- a_out
-	fmt.Fprintln(w, "Querry here <br>" + res)
+	fmt.Fprintln(w, "Results here <br>" + res)
 }
 
 func UrlHtmlFormatter(w io.Writer, fmt string, v ...interface{}) {

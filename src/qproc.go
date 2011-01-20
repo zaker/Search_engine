@@ -153,8 +153,8 @@ func QuerryProc(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
 	wT := qProc(dm, im, qs)
 	tW := wT.Sum2Slice()
 	dm2 := NewDocMap()
-	if len(tW) > 5 {
-		tW = tW[:5]
+	if len(tW) > 20 {
+		tW = tW[:20]
 	}
 	for i := range tW {
 		// 		println("first feed",tW[i].doc)
@@ -169,6 +169,9 @@ func QuerryProc(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
 
 	}
 	outW = wT2.Sum2Slice()
+	if len(outW) > 5 {
+		outW = outW[:5]
+	}
 	// 	for i := range tW2 {
 	// // 		println("rel feed",tW2[i].doc)
 	// // 	}
