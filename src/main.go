@@ -3,8 +3,12 @@ package main
 import (
 	// 	"sort"
 	"os"
+	"flag"
 )
 
+
+var startQuerry = flag.Bool("q", true, "Going through querries")
+// var startWebserver = flag.Bool("w", true, "Starting webserver")
 
 func main() {
 
@@ -28,7 +32,10 @@ func main() {
 		println(err.String())
 	}
 
-	// 	QuerriesProc(dm, qm, im)
-	wServer(dm, im)
+	if *startQuerry {
+		QuerriesProc(dm, qm, im)
+	} else {
+		wServer(dm, im)
+	}
 
 }

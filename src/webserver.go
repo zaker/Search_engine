@@ -20,30 +20,31 @@ var templ = template.MustParse(templateStr, fmap)
 var q_in = make(chan string)
 var a_out = make(chan string)
 
-func handleQuerry(dm DocMap, im InvertMap){
+func handleQuerry(dm DocMap, im InvertMap) {
 	for {
-	s := <- q_in
-	qs := cleanS(s)
-	res := QuerryProc(dm,im,qs)
-// 	println(s)
-	
-	
-	out := ""
-	       for i:= range res{
-		       
-		       tmp := strconv.Itoa(i+1) + ". doc[" + strconv.Itoa(res[i].doc) +"]  "+ dm[res[i].doc].W + "<br><br>"
-		       out += tmp 
-// 		       println(tmp)
-	       }
-	       a_out <-out
+		s := <-q_in
+		qs := cleanS(s)
+		res := QuerryProc(dm, im, qs)
+		// 	println(s)
+
+
+		out := ""
+		for i := range res {
+
+			tmp := strconv.Itoa(i+1) + ". doc[" + strconv.Itoa(res[i].doc) + "]  " + dm[res[i].doc].W + "<br><br>"
+			out += tmp
+			// 		       println(tmp)
+		}
+		a_out <- out
 	}
-	
+
 }
 
 func wServer(dm DocMap, im InvertMap) {
+	println("webserver")
 	flag.Parse()
-// 	fmt.Println("%d\n",7)
-	go handleQuerry(dm,im)
+	// 	fmt.Println("%d\n",7)
+	go handleQuerry(dm, im)
 	http.Handle("/", http.HandlerFunc(Search))
 	err := http.ListenAndServe(*addr, nil)
 	if err != nil {
@@ -56,17 +57,17 @@ func QR(w http.ResponseWriter, req *http.Request) {
 }
 
 func Search(w http.ResponseWriter, req *http.Request) {
-// 	println(req.FormValue("s"))
+	// 	println(req.FormValue("s"))
 	s := req.FormValue("s")
 	q_in <- s
 	templ.Execute(s, w)
-	res := <- a_out
-	fmt.Fprintln(w, "Results here <br>" + res)
+	res := <-a_out
+	fmt.Fprintln(w, "Results here <br>"+res)
 }
 
 func UrlHtmlFormatter(w io.Writer, fmt string, v ...interface{}) {
 	template.HTMLEscape(w, []byte(http.URLEscape(v[0].(string))))
-// 	fmt.Fprintln(w, "dsdsd\nasdfasdf\tasdfasdf\"tile\"")
+	// 	fmt.Fprintln(w, "dsdsd\nasdfasdf\tasdfasdf\"tile\"")
 }
 
 const templateStr = `

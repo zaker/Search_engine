@@ -147,6 +147,25 @@ func (wT weightTable) Add(wT2 weightTable) {
 	// 	tW.Sort()
 	return
 }
+func (wT weightTable) Mul(wT2 weightTable) {
+	for i := range wT2 {
+
+		// 		var sum float64
+		// 		_,ok := wT[i]
+		// 		if ok{
+		for j := range wT2[i] {
+			if len(wT[i]) < 1 {
+				wT[i] = make([]float64, 1)
+			}
+			wT[i][0] *= 0.8 * wT2[i][j]
+		}
+		// 		}
+		// 		tW = append(tW, tWeigth{doc: i, weight: sum})
+	}
+
+	// 	tW.Sort()
+	return
+}
 
 func QuerryProc(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
 
@@ -165,24 +184,31 @@ func QuerryProc(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
 	for i := range tW {
 		tempW := qProc(dm2, im, dm[tW[i].doc].S)
 
-		wT2.Add(tempW)
+		wT2.Mul(tempW)
 
 	}
-	outW = wT2.Sum2Slice()
-	if len(outW) > 5 {
-		outW = outW[:5]
+	tW2 := wT2.Sum2Slice()
+	// 	if len(outW) > 5 {
+	// // 		outW = outW[:5]
+	// 	}
+	for i := range tW2 {
+		outW = append(outW, tWeigth{doc: tW2[i].doc, weight: tW[i].weight * tW2[i].weight})
 	}
-	// 	for i := range tW2 {
-	// // 		println("rel feed",tW2[i].doc)
-	// // 	}
 	return
 }
 
 func QuerriesProc(dm DocMap, qm QuerryMap, im InvertMap) {
 
-	for i := range qm {
-		// 		println("q",i)
-		QuerryProc(dm, im, qm[i].S)
+	println("querry parser")
+	i := 0
+	for j := 0; j < len(qm); {
+		_, ok := qm[i]
+		if ok {
+			println(i, j)
+			QuerryProc(dm, im, qm[i].S)
+			j++
+		}
+		i++
 	}
 
 }
