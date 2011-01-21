@@ -7,11 +7,11 @@ import (
 )
 
 
-var startQuerry = flag.Bool("q", true, "Going through querries")
+var startQuerry = flag.Bool("q", false, "Going through querries")
 // var startWebserver = flag.Bool("w", true, "Starting webserver")
 
 func main() {
-
+	flag.Parse()
 	var err os.Error
 
 	dm := NewDocMap()
