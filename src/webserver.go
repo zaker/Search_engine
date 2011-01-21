@@ -24,7 +24,7 @@ func handleQuerry(dm DocMap, im InvertMap) {
 	for {
 		s := <-q_in
 		qs := cleanS(s)
-		res := QuerryProc(dm, im, qs)
+		res := QuerryProcFeedback(dm, im, qs)
 		// 	println(s)
 
 
