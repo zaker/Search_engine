@@ -3,8 +3,8 @@ package main
 import (
 	"math"
 	"sort"
-// 	"fmt"
-		"strconv"
+	// 	"fmt"
+	"strconv"
 )
 
 type weightTable map[int][]float64
@@ -169,7 +169,7 @@ func (wT weightTable) Mul(wT2 weightTable) {
 }
 
 func QuerryProc(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
-	
+
 	wT := qProc(dm, im, qs)
 	outW = wT.Sum2Slice()
 
@@ -181,7 +181,7 @@ func QuerryProc(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
 
 func QuerryProcFeedback(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
 
-	tW := QuerryProc(dm , im , qs )
+	tW := QuerryProc(dm, im, qs)
 	dm2 := NewDocMap()
 	for i := range tW {
 		// 		println("first feed",tW[i].doc)
@@ -200,7 +200,7 @@ func QuerryProcFeedback(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
 	// // 		outW = outW[:5]
 	// 	}
 	for i := range tW2 {
-// 		println(tW[i].weight,tW2[i].weight)
+		// 		println(tW[i].weight,tW2[i].weight)
 		outW = append(outW, tWeigth{doc: tW2[i].doc, weight: tW[i].weight * tW2[i].weight})
 	}
 	return
@@ -210,23 +210,22 @@ func QuerriesProc(dm DocMap, qm QuerryMap, im InvertMap) {
 
 	println("querry parser")
 	i := 0
-	outS := "" 
-	
+	outS := ""
+
 	for j := 0; j < len(qm); {
 		_, ok := qm[i]
 		if ok {
-// 			println(i, j)
+			// 			println(i, j)
 			j++
-// 			outW := QuerryProc(dm, im, qm[i].S)
-			
+			// 			outW := QuerryProc(dm, im, qm[i].S)
+
 			outW := QuerryProcFeedback(dm, im, qm[i].S)
-			for k:= range outW { 
-				tmp := strconv.Itoa(j) + " 0 " + strconv.Itoa(outW[k].doc) + " 0 " + strconv.Ftoa64(outW[k].weight, 'f', 16)  + " testRun\n"
+			for k := range outW {
+				tmp := strconv.Itoa(j) + " 0 " + strconv.Itoa(outW[k].doc) + " 0 " + strconv.Ftoa64(outW[k].weight, 'f', 16) + " testRun\n"
 				outS += tmp
-// 				println(tmp)
+				// 				println(tmp)
 			}
-			
-			
+
 		}
 		i++
 	}
