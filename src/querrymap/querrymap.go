@@ -1,11 +1,11 @@
-package main
-
+package querrymap
 
 import (
 	// 	"fmt"
-	"os"
-	"strings"
+	"../utils"
+	"errors"
 	"strconv"
+	"strings"
 )
 
 type Querry struct {
@@ -15,7 +15,6 @@ type Querry struct {
 }
 
 type QuerryMap map[int]Querry
-
 
 func (qm QuerryMap) Print(i int) {
 
@@ -28,9 +27,9 @@ func (qm QuerryMap) Print(i int) {
 
 }
 
-func sToQuerry(s string) (*Querry, os.Error) {
+func sToQuerry(s string) (*Querry, error) {
 
-	tmp := strings.Split(s, ".W", -1)
+	tmp := strings.Split(s, ".W")
 
 	tmp[0] = strings.TrimSpace(tmp[0])
 
@@ -38,13 +37,13 @@ func sToQuerry(s string) (*Querry, os.Error) {
 	W := strings.TrimSpace(tmp[1])
 
 	if I == 0 {
-		return nil, os.NewError("Empty doc")
+		return nil, errors.New("Empty doc")
 	}
 	if err != nil {
 		return nil, err
 	}
 
-	S := cleanS(W)
+	S := utils.CleanS(W)
 	// 	println(W)
 	// 	qm.Print(4)
 	// 	S := make([]string,2)
@@ -57,10 +56,10 @@ func NewQuerryMap() QuerryMap {
 	return make(QuerryMap)
 }
 
-func (qm QuerryMap) addTo(s string) (err os.Error) {
+func (qm QuerryMap) addTo(s string) (err error) {
 
 	if s == "" {
-		return os.NewError("Empty string")
+		return errors.New("Empty string")
 	}
 	d, err := sToQuerry(s)
 
@@ -70,12 +69,11 @@ func (qm QuerryMap) addTo(s string) (err os.Error) {
 
 	qm[d.I] = *d
 
-	// 	qm.Print(2)
 	return nil
 }
-func (qm QuerryMap) QuerryReader() (err os.Error) {
+func (qm QuerryMap) QuerryReader() (err error) {
 
-	Querries, err := contents("../data/cran.qry")
+	Querries, err := utils.Contents("../data/cran.qry")
 
 	if err != nil {
 		return
@@ -83,10 +81,10 @@ func (qm QuerryMap) QuerryReader() (err os.Error) {
 
 	if qm == nil {
 
-		return os.NewError("QuerryMap not initialized")
+		return errors.New("QuerryMap not initialized")
 	}
 
-	QuerryStrings := strings.Split(Querries, ".I", -1)
+	QuerryStrings := strings.Split(Querries, ".I")
 
 	for i := range QuerryStrings {
 		// 	for i := 0; i < 2; i++{

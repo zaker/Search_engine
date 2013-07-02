@@ -1,6 +1,10 @@
-package main
+package qproc
 
 import (
+	"../docmap"
+	"../invertmap"
+	"../querrymap"
+	"../utils"
 	"math"
 	"sort"
 	// 	"fmt"
@@ -11,12 +15,10 @@ type weightTable map[int][]float64
 
 type tWeigths []tWeigth
 
-
 type tWeigth struct {
 	doc    int
 	weight float64
 }
-
 
 func (tw tWeigths) Len() int {
 
@@ -55,15 +57,15 @@ func (tw tWeigths) Sum(tWs []tWeigths) {
 	}
 	return
 }
+
 // type tWeigth interface{
 // 	doc int
 // 	weight float64
-// 	
+//
 // }
 type docWeight map[int]float64
 
-
-func weigh_term(dm DocMap, id, num, tot int) (wght float64) {
+func weigh_term(dm docmap.DocMap, id, num, tot int) (wght float64) {
 
 	ldoc := len(dm[id].S)
 	if ldoc <= 0 {
@@ -87,7 +89,7 @@ type Term struct {
 	num int
 }
 
-func exists(dm DocMap, rf []Reference) (terms Terms) {
+func exists(dm docmap.DocMap, rf []invertmap.Reference) (terms Terms) {
 	terms = make(Terms)
 	for i := range rf {
 		_, ok := dm[rf[i].DocNo]
@@ -98,7 +100,7 @@ func exists(dm DocMap, rf []Reference) (terms Terms) {
 	return
 }
 
-func qProc(dm DocMap, im InvertMap, qs []string) (wT weightTable) {
+func qProc(dm docmap.DocMap, im invertmap.InvertMap, qs []string) (wT weightTable) {
 
 	wT = make(weightTable)
 	for i := range qs {
@@ -168,7 +170,7 @@ func (wT weightTable) Mul(wT2 weightTable) {
 	return
 }
 
-func QuerryProc(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
+func QuerryProc(dm docmap.DocMap, im invertmap.InvertMap, qs []string) (outW tWeigths) {
 
 	wT := qProc(dm, im, qs)
 	outW = wT.Sum2Slice()
@@ -179,10 +181,10 @@ func QuerryProc(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
 	return
 }
 
-func QuerryProcFeedback(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
+func QuerryProcFeedback(dm docmap.DocMap, im invertmap.InvertMap, qs []string) (outW tWeigths) {
 
 	tW := QuerryProc(dm, im, qs)
-	dm2 := NewDocMap()
+	dm2 := docmap.NewDocMap()
 	for i := range tW {
 		// 		println("first feed",tW[i].doc)
 		dm2[tW[i].doc] = dm[tW[i].doc]
@@ -206,7 +208,7 @@ func QuerryProcFeedback(dm DocMap, im InvertMap, qs []string) (outW tWeigths) {
 	return
 }
 
-func QuerriesProc(dm DocMap, qm QuerryMap, im InvertMap) {
+func QuerriesProc(dm docmap.DocMap, qm querrymap.QuerryMap, im invertmap.InvertMap) {
 
 	println("querry parser")
 	i := 0
@@ -221,7 +223,10 @@ func QuerriesProc(dm DocMap, qm QuerryMap, im InvertMap) {
 
 			outW := QuerryProcFeedback(dm, im, qm[i].S)
 			for k := range outW {
-				tmp := strconv.Itoa(j) + " 0 " + strconv.Itoa(outW[k].doc) + " 0 " + strconv.Ftoa64(outW[k].weight, 'f', 16) + " testRun\n"
+				tmp := strconv.Itoa(j) +
+					" 0 " + strconv.Itoa(outW[k].doc) +
+					" 0 " + strconv.FormatFloat(outW[k].weight, 'f', -1, 64) +
+					" testRun\n"
 				outS += tmp
 				// 				println(tmp)
 			}
@@ -229,6 +234,6 @@ func QuerriesProc(dm DocMap, qm QuerryMap, im InvertMap) {
 		}
 		i++
 	}
-	write_to("trec_eval2", []byte(outS))
+	utils.Write_to("trec_eval2", []byte(outS))
 
 }

@@ -1,12 +1,16 @@
-package main
+package webserv
 
 import (
+	"../docmap"
+	"../invertmap"
+	"../qproc"
+	"../utils"
 	"flag"
-	"http"
+	"fmt"
+	"html/template"
 	"io"
 	"log"
-	"template"
-	"fmt"
+	"net/http"
 	"strconv"
 )
 
@@ -20,13 +24,12 @@ var templ = template.MustParse(templateStr, fmap)
 var q_in = make(chan string)
 var a_out = make(chan string)
 
-func handleQuerry(dm DocMap, im InvertMap) {
+func handleQuerry(dm docmap.DocMap, im invertmap.InvertMap) {
 	for {
 		s := <-q_in
-		qs := cleanS(s)
-		res := QuerryProcFeedback(dm, im, qs)
+		qs := utils.CleanS(s)
+		res := qproc.QuerryProcFeedback(dm, im, qs)
 		// 	println(s)
-
 
 		out := ""
 		for i := range res {
@@ -40,7 +43,7 @@ func handleQuerry(dm DocMap, im InvertMap) {
 
 }
 
-func wServer(dm DocMap, im InvertMap) {
+func wServer(dm docmap.DocMap, im InvertMap) {
 	println("webserver")
 	flag.Parse()
 	// 	fmt.Println("%d\n",7)

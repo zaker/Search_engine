@@ -1,13 +1,12 @@
-package main
-
+package invertmap
 
 import (
-	"os"
+	"../docmap"
+	"../utils"
 	"bytes"
-	"gob"
+	"encoding/gob"
 	"fmt"
 )
-
 
 type Reference struct {
 	DocNo  int
@@ -21,8 +20,7 @@ func NewInvertMap() InvertMap {
 	return make(InvertMap)
 }
 
-
-func (im InvertMap) AddStemTo(doc []string, DocNo int) (err os.Error) {
+func (im InvertMap) AddStemTo(doc []string, DocNo int) (err error) {
 
 	// 	words := cleanS(doc)
 	for wordNo, word := range doc {
@@ -34,10 +32,11 @@ func (im InvertMap) AddStemTo(doc []string, DocNo int) (err os.Error) {
 	}
 	return
 }
-// Deletes map entry
-func (im InvertMap) DeleteStem(s string) (err os.Error) {
 
-	im[s] = nil, false
+// Deletes map entry
+func (im InvertMap) DeleteStem(s string) (err error) {
+
+	im[s] = nil
 	return
 }
 
@@ -49,9 +48,9 @@ func (im InvertMap) LenDocs(key string) (l int) {
 }
 
 //  Loads index from file
-func (im InvertMap) Load(im_filename string) (err os.Error) {
+func (im InvertMap) Load(im_filename string) (err error) {
 
-	str, err := contents(im_filename)
+	str, err := utils.Contents(im_filename)
 
 	b := bytes.NewBufferString(str)
 	dec := gob.NewDecoder(b)
@@ -60,8 +59,9 @@ func (im InvertMap) Load(im_filename string) (err os.Error) {
 
 	return nil
 }
+
 // Stores the inverted index to file
-func (im InvertMap) Save(im_filename string) (err os.Error) {
+func (im InvertMap) Save(im_filename string) (err error) {
 
 	b := new(bytes.Buffer)
 
@@ -69,14 +69,14 @@ func (im InvertMap) Save(im_filename string) (err os.Error) {
 	err = enc.Encode(&im)
 
 	if err != nil {
-		fmt.Printf("encode %s\n", err.String())
+		fmt.Printf("encode %s\n", err)
 		return
 	}
 
-	err = write_to(im_filename, b.Bytes())
+	err = utils.Write_to(im_filename, b.Bytes())
 
 	if err != nil {
-		fmt.Printf("write %s\n", err.String())
+		fmt.Printf("write %s\n", err)
 		return
 	}
 
@@ -84,13 +84,17 @@ func (im InvertMap) Save(im_filename string) (err os.Error) {
 }
 
 // Takes a Doc Map and adds to the inverted map
-func (im *InvertMap) DocMToInM(dm DocMap) (err os.Error) {
+func (im *InvertMap) DocMToInM(dm docmap.DocMap) (err error) {
 
 	im_filename := "../tmp/im_file"
 
-	if existsQ(im_filename) {
+	if b, err := utils.ExistsQ(im_filename); b {
 		println("exist")
 		return im.Load(im_filename)
+	} else {
+		if err != nil {
+			return err
+		}
 	}
 	j := 0
 	for i := range dm {
@@ -100,7 +104,7 @@ func (im *InvertMap) DocMToInM(dm DocMap) (err os.Error) {
 	}
 
 	if err != nil {
-		fmt.Printf("%s\n", err.String())
+		fmt.Printf("%s\n", err)
 		return
 	}
 

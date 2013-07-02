@@ -2,40 +2,43 @@ package main
 
 import (
 	// 	"sort"
-	"os"
+	"./docmap"
+	"./invertmap"
+	"./qproc"
+	"./querrymap"
 	"flag"
 )
 
-
 var startQuerry = flag.Bool("q", false, "Going through querries")
+
 // var startWebserver = flag.Bool("w", true, "Starting webserver")
 
 func main() {
 	flag.Parse()
-	var err os.Error
 
-	dm := NewDocMap()
-	dm.DocReader()
+	dm := docmap.NewDocMap()
+	err := dm.DocReader()
 
 	if err != nil {
+		println(err)
 		return
 	}
-	qm := NewQuerryMap()
+	qm := querrymap.NewQuerryMap()
 
 	qm.QuerryReader()
 
-	im := NewInvertMap()
+	im := invertmap.NewInvertMap()
 
 	err = im.DocMToInM(dm)
 
 	if err != nil {
-		println(err.String())
+		println(err)
 	}
 
 	if *startQuerry {
-		QuerriesProc(dm, qm, im)
+		qproc.QuerriesProc(dm, qm, im)
 	} else {
-		wServer(dm, im)
+		println("No webservice")
 	}
 
 }
