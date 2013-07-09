@@ -1,12 +1,12 @@
 package main
 
 import (
-	// 	"sort"
 	"./docmap"
 	"./invertmap"
 	"./qproc"
 	"./querrymap"
 	"flag"
+	"github.com/davecheney/profile"
 )
 
 var startQuerry = flag.Bool("q", false, "Going through querries")
@@ -14,8 +14,8 @@ var startQuerry = flag.Bool("q", false, "Going through querries")
 // var startWebserver = flag.Bool("w", true, "Starting webserver")
 
 func main() {
+	defer profile.Start(profile.CPUProfile).Stop()
 	flag.Parse()
-
 	dm := docmap.NewDocMap()
 	err := dm.DocReader()
 

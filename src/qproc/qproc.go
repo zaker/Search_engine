@@ -9,6 +9,7 @@ import (
 	"sort"
 	// 	"fmt"
 	"strconv"
+	"sync"
 )
 
 type weightTable map[int][]float64
@@ -86,15 +87,30 @@ type Terms map[int]int
 
 type Term struct {
 	doc int
-	num int
+	//num int
 }
 
 func exists(dm docmap.DocMap, rf []invertmap.Reference) (terms Terms) {
 	terms = make(Terms)
-	for i := range rf {
-		_, ok := dm[rf[i].DocNo]
+	termArray := make([]int, 0)
+	for _, ref := range rf {
+		_, ok := dm[ref.DocNo]
 		if ok {
-			terms[rf[i].DocNo]++
+			termArray = append(termArray, ref.DocNo)
+		}
+	}
+	sort.Ints(termArray)
+	if len(termArray) > 0 {
+		t1 := termArray[0]
+		sum := 0
+		for _, t2 := range termArray {
+			if t1 == t2 {
+				sum++
+			} else {
+				t1 = t2
+				terms[t1] = sum
+				sum = 0
+			}
 		}
 	}
 	return
@@ -103,20 +119,30 @@ func exists(dm docmap.DocMap, rf []invertmap.Reference) (terms Terms) {
 func qProc(dm docmap.DocMap, im invertmap.InvertMap, qs []string) (wT weightTable) {
 
 	wT = make(weightTable)
-	for i := range qs {
-		term_docs := exists(dm, im[qs[i]])
-		tot := len(term_docs)
+	var wg sync.WaitGroup
+	var lck sync.Mutex
+	for i, qsT := range qs {
+		wg.Add(1)
+		go func(totQ, iT int, qStr string) {
+			defer wg.Done()
+			term_docs := exists(dm, im[qStr])
+			tot := len(term_docs)
 
-		for j := range term_docs {
-			d, n := j, term_docs[j]
-
-			if len(wT[d]) < len(qs) {
-				wT[d] = make([]float64, len(qs))
+			for d, td := range term_docs {
+				lck.Lock()
+				if len(wT[d]) < totQ {
+					wT[d] = make([]float64, totQ)
+				}
+				lck.Unlock()
+				// 			println(qs[i])
+				wghtT := weigh_term(dm, d, td, tot)
+				lck.Lock()
+				wT[d][iT] = wghtT
+				lck.Unlock()
 			}
-			// 			println(qs[i])
-			wT[d][i] = weigh_term(dm, d, n, tot)
-		}
+		}(len(qs), i, qsT)
 	}
+	wg.Wait()
 	return
 }
 func (wT weightTable) Sum2Slice() (tW tWeigths) {

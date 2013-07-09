@@ -96,15 +96,19 @@ func (im *InvertMap) DocMToInM(dm docmap.DocMap) (err error) {
 			return err
 		}
 	}
-	j := 0
-	for i := range dm {
-		j++
-		println(j)
-		err = im.AddStemTo(dm[i].S, dm[i].I)
-	}
+	i := 0
+	for _, j := range dm {
 
+		if i%30 == 0 {
+			fmt.Printf("\n")
+		}
+		fmt.Printf(".")
+		err = im.AddStemTo(j.S, j.I)
+		i++
+	}
+	fmt.Printf("\n")
 	if err != nil {
-		fmt.Printf("%s\n", err)
+		fmt.Println(err)
 		return
 	}
 
